@@ -1,7 +1,6 @@
 
 **/*.log
 logs
-**/*.jar
 
 # Editor directories and files
 **/.idea
