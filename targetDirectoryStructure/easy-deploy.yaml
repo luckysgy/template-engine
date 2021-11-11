@@ -1,0 +1,7 @@
+app:
+  name: project
+  version: v202107
+  env: dev
+
+template:
+  outPath: out

@@ -1,0 +1,5 @@
+#! /bin/bash
+
+cur_exec_dir=$(pwd)
+echo "current exec dir: "$cur_exec_dir
+java -jar /usr/local/bin/easy-deploy-jar-with-dependencies.jar $cur_exec_dir

@@ -1,0 +1,4 @@
+test2:
+  name: 100-105
+mysql:
+  dataPath: /home

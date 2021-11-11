@@ -1,0 +1,4 @@
+#set($Say = ["Not",$name,"fault"]) ##数组列表
+$Say[0]
+$ed.my.name
+$ed.mysql.dataPath

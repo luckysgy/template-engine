@@ -1,0 +1,14 @@
+
+**/*.log
+logs
+**/*.jar
+
+# Editor directories and files
+**/.idea
+**/.vscodes
+
+**/target
+**/*.iml
+*.iml
+*.ipr
+*.iws

@@ -1,0 +1,2 @@
+my:
+  name: ${test2.name}
