@@ -1,2 +1,21 @@
+dataBasePath: /mnt/data_disk_10000/docker-volume
+dockerBuildDataPath: /mnt/data_disk_10000/deploy/docker-build-data
+
 my:
-  name: ${test2.name}
+  image: minio/minio:RELEASE.2021-06-14T01-29-23Z
+  port:
+    node: 39000
+    container: 9000
+  name: ${dataBasePath}
+minio:
+  image: minio/minio:RELEASE.2021-06-14T01-29-23Z
+  port:
+    node: 39000
+    container: 9000
+  volumebasepath: ${dataBasePath}/mino
+  # 相当于用户名
+  accessKey: QWER@1234
+  # 相当于密码
+  secretKey: QWER@1234
+
+

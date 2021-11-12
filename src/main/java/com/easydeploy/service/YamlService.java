@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author shenguangyang
@@ -21,6 +23,8 @@ import java.util.*;
 public class YamlService {
     // 也可以将值转换为Map
     private static final Map<String, Object> YAML_DATA = new HashMap<>();
+    // 正则表达式用于提取 字符串中所有${}
+    private static final Pattern pattern = Pattern.compile("\\$\\{([^}]*)\\}");
 
     /**
      * 加载yaml
@@ -96,15 +100,17 @@ public class YamlService {
             Object value = entry.getValue();
             if (value instanceof String) {
                 String valueString = (String) value;
-                if (valueString.startsWith("${") && valueString.endsWith("}")) {
-                    String findKey = valueString.substring(valueString.lastIndexOf("${") + 2, valueString.lastIndexOf("}"));
+                Matcher matcher = pattern.matcher(valueString);
+                while (matcher.find()) {
+                    String findKey = matcher.group(1);
                     value = yamlDataParseResult.get(findKey);
                     if (value == null) {
                         // 查找环境变量
                         value = envMap.get(findKey);
                     }
-                    setYamlQuote(key, value);
-                    yamlDataParseResult.put(key, value);
+                    valueString = valueString.replace("${" + findKey + "}", value + "");
+                    setYamlQuote(key, valueString);
+                    yamlDataParseResult.put(key, valueString);
                 }
             }
         }
@@ -138,6 +144,7 @@ public class YamlService {
                 result.put(keyData.substring(1), entry.getValue());
                 keyData = keyData.substring(0, keyData.lastIndexOf("."));
             }
+            System.out.println(keyData);
         }
     }
 
