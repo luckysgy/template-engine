@@ -10,6 +10,10 @@ sh install.sh
 
 如果你使用的是win10, 则使用git命令行执行`sh install.sh`
 
+# 声明
+
+在模板中从value中取的所有变量都是以ed开头
+
 # 内置变量
 
 ed.dataPath: 数据路径, 存在与项目的根目录下且文件夹名为data

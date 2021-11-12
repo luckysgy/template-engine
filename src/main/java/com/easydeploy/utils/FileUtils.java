@@ -104,6 +104,28 @@ public class FileUtils {
     }
 
     /**
+     * 迭代删除文件夹
+     * @param dirPath 文件夹路径
+     */
+    public static void deleteDir(String dirPath) {
+        File file = new File(dirPath);
+        if(file.isFile()) {
+            file.delete();
+        } else {
+            File[] files = file.listFiles();
+            if(files == null) {
+                file.delete();
+            } else {
+                for (File value : files) {
+                    deleteDir(value.getAbsolutePath());
+                }
+                file.delete();
+            }
+        }
+    }
+
+
+    /**
      * 输出指定文件的byte数组
      * 
      * @param filePath 文件路径

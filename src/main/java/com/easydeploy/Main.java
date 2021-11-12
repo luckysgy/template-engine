@@ -49,6 +49,7 @@ public class Main {
         context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
 
         String parseTemplateOutPath = applicationContext.createParseTemplateOutPath(EasyDeployProperties.template.getOutPath());
+        FileUtils.deleteDir(parseTemplateOutPath);
         // 渲染模板
         // 获取模板列表
         List<String> templates = getVmList(applicationContext);
