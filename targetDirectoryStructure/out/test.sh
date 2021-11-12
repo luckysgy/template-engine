@@ -36,5 +36,5 @@ This is maple.
 对字符串截取 105
 6
 
-"${dataBasePath}/mino"
-"${dataBasePath}"
+"/mnt/data_disk_10000/docker-volume/mino"
+"/mnt/data_disk_10000/docker-volume"

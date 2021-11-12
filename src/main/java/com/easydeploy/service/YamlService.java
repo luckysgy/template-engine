@@ -134,17 +134,33 @@ public class YamlService {
 
     }
 
+    /**
+     * 将map中的key, 以点连接在一起
+     *
+     * 比如yaml插件解析的数据为Map
+     *  key1:
+     *      key2:
+     *          key3-1: we4r23
+     *          key3-2: 234234
+     *      key2-1: 23412
+     *
+     *  可以看到如果你的yaml文件有多层, 则对应map就有多层
+     *
+     *  而本方法的作用从根节点出发,连接所有的key, 比如key1.key2.key3-1 = we4r23
+     * @param keyData
+     * @param valueData
+     * @param result
+     */
     public static void recursionYamlData(String keyData, Map<String, Object> valueData, Map<String, Object> result) {
         for (Map.Entry<String, Object> entry : valueData.entrySet()) {
             keyData = keyData + "." + entry.getKey();
             if (entry.getValue() instanceof Map) {
                 recursionYamlData(keyData, (Map<String, Object>) entry.getValue(), result);
-                keyData = "";
             } else {
                 result.put(keyData.substring(1), entry.getValue());
-                keyData = keyData.substring(0, keyData.lastIndexOf("."));
             }
-            System.out.println(keyData);
+            keyData = keyData.substring(0, keyData.lastIndexOf("."));
+
         }
     }
 
