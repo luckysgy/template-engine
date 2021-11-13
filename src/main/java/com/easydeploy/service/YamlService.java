@@ -6,6 +6,7 @@ import com.easydeploy.properties.App;
 import com.easydeploy.properties.EasyDeployProperties;
 import com.easydeploy.properties.Template;
 import com.easydeploy.utils.FileUtils;
+import com.easydeploy.directive.RootPath;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -23,18 +24,21 @@ import java.util.regex.Pattern;
 public class YamlService {
     // 也可以将值转换为Map
     private static final Map<String, Object> YAML_DATA = new HashMap<>();
+
+    // 存放自定义对象
+    private static final Map<String, Object> CUSTOM_OBJECT = new HashMap<>();
+
     // 正则表达式用于提取 字符串中所有${}
     private static final Pattern pattern = Pattern.compile("\\$\\{([^}]*)\\}");
 
     /**
      * 加载yaml
-     * @param applicationContext 应用上下文
      */
-    public static void loadYaml(ApplicationContext applicationContext) {
+    public static void loadYaml() {
         Yaml yaml = new Yaml();
         InputStream in = null;
         try {
-            List<String> allFile = FileUtils.getAllFile(applicationContext.getTargetProjectRootPath() + "/" + SystemConstant.VALUE_DIR_NAME, false, null);
+            List<String> allFile = FileUtils.getAllFile(ApplicationContext.targetProjectValuePath, false, null);
             allFile = FileUtils.winToLinuxForPath(allFile);
             for (String yamlFilePath : allFile) {
                 in = new FileInputStream(yamlFilePath);
@@ -45,7 +49,7 @@ public class YamlService {
                 }
                 YAML_DATA.putAll(yamlData);
             }
-            String easyDeployYamlPath = applicationContext.getTargetProjectRootPath() + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME;
+            String easyDeployYamlPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME;
 
             in = new FileInputStream(easyDeployYamlPath);
             Map<String, Object> yamlData = yaml.loadAs(in, Map.class);
@@ -53,7 +57,8 @@ public class YamlService {
                 throw new RuntimeException(SystemConstant.SYSTEM_YAML_FILE_NAME + " 内容不能为空");
             }
             YAML_DATA.putAll(yamlData);
-            initInternalVariable(applicationContext);
+            initInternalVariable();
+            loadCustomObject();
 
             App app = EasyDeployProperties.app;
             Map<String, String> appInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_APP);
@@ -81,9 +86,9 @@ public class YamlService {
     /**
      * 初始化内部变量
      */
-    public static void initInternalVariable(ApplicationContext applicationContext) {
-        YAML_DATA.put(SystemConstant.INTERNAL_VAR_DATA_PATH, applicationContext.getTargetProjectRootPath() + "/" + SystemConstant.DATA_DIR_NAME);
-        YAML_DATA.put(SystemConstant.INTERNAL_VAR_ROOT_PATH, applicationContext.getTargetProjectRootPath());
+    private static void initInternalVariable() {
+        YAML_DATA.put(SystemConstant.INTERNAL_VAR_DATA_PATH, ApplicationContext.targetProjectDataPath);
+        YAML_DATA.put(SystemConstant.INTERNAL_VAR_ROOT_PATH, ApplicationContext.targetProjectRootPath);
     }
 
     /**
@@ -120,7 +125,7 @@ public class YamlService {
 //        }
     }
 
-    public static void setYamlQuote(String keyStr, Object value) {
+    private static void setYamlQuote(String keyStr, Object value) {
         String[] keys = keyStr.split("\\.");
         Map<String, Object> findDataPre = new HashMap<>();
         for (String key : keys) {
@@ -131,7 +136,13 @@ public class YamlService {
                 findDataPre.put(key, value);
             }
         }
+    }
 
+    /**
+     * 加载自定义对象, 在模板文件中可以直接调用方法
+     */
+    private static void loadCustomObject() {
+        CUSTOM_OBJECT.put("path", new RootPath());
     }
 
     /**
@@ -166,5 +177,9 @@ public class YamlService {
 
     public static Map<String, Object> getYamlValueData() {
         return YAML_DATA;
+    }
+
+    public static Map<String, Object> getCustomObject() {
+        return CUSTOM_OBJECT;
     }
 }

@@ -62,3 +62,10 @@ $velocityCount
 
 "${ed.minio.volumebasepath}"
 "${ed.my.name}"
+#set($test1 = "#rootPath/test1")
+$test1
+cd #rootPath/template
+#rootPath
+#dataPath
+source #shell("color-log.sh")
+warn "cd #rootPath"

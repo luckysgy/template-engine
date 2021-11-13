@@ -38,3 +38,9 @@ This is maple.
 
 "/mnt/data_disk_10000/docker-volume/mino"
 "/mnt/data_disk_10000/docker-volume"
+../test1
+cd ../template
+..
+../data
+source ../shell/color-log.sh
+warn "cd .."

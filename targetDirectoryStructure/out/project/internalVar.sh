@@ -1,2 +1,3 @@
-/Git/mnt/data_disk_5000/code/my/easy-deploy/targetDirectoryStructure/data
-/Git/mnt/data_disk_5000/code/my/easy-deploy/targetDirectoryStructure
+source ../../shell/color-log.sh
+infolog /Git/mnt/data_disk_5000/code/my/easy-deploy/targetDirectoryStructure/data
+error /Git/mnt/data_disk_5000/code/my/easy-deploy/targetDirectoryStructure

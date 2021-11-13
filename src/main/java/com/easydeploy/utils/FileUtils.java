@@ -1,5 +1,7 @@
 package com.easydeploy.utils;
 
+import org.apache.velocity.texen.util.FileUtil;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,88 @@ public class FileUtils {
             if (!file.mkdirs()) {
                 throw new RuntimeException("dir mkdirs fail: " + dirPath);
             }
+        }
+    }
+
+    /**
+     * 创建文件
+     * @param path  全路径 指向文件
+     * @return
+     */
+    public static boolean makeFile(String path) {
+        File file = new File(path);
+        if(file.exists()) {
+            return false;
+        }
+        if (path.endsWith(File.separator)) {
+            System.err.println("Cannot be a directory!");
+            return false;
+        }
+        if(!file.getParentFile().exists()) {
+            if(!file.getParentFile().mkdirs()) {
+                System.err.println("Failed to create the directory where the target file is located!");
+                return false;
+            }
+        }
+        try {
+            if (file.createNewFile()) {
+                // System.out.println("create file " + path + " success！");
+                return true;
+            } else {
+                System.err.println("create file" + path + " fail！");
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("create file " + path + " fail！" + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 输入流写入文件
+     *
+     * @param is
+     *            输入流
+     * @param filePath
+     *            文件保存目录路径
+     * @throws IOException
+     */
+    public static void writeToFile(InputStream is, String filePath) throws IOException {
+        OutputStream os = new FileOutputStream(filePath);
+        int len = 8192;
+        byte[] buffer = new byte[len];
+        while ((len = is.read(buffer, 0, len)) != -1) {
+            os.write(buffer, 0, len);
+        }
+        os.close();
+        is.close();
+    }
+
+    /**
+     * 复制单个文件 从classpath中读取文件复制
+     * @param path  不能以/开头   指向文件不能是目录
+     * @param newPath   指向文件不能是目录
+     */
+    public static void copyFileFromJar(String path,String newPath) {
+        try {
+            if (path == null) {
+                return;
+            }
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            //创建新文件
+            makeFile(newPath);
+            //获取文件流
+            InputStream in = FileUtil.class.getClassLoader().getResourceAsStream(path);
+            if (in == null) {
+                return;
+            }
+            //将流写入新文件
+            writeToFile(in, newPath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -223,6 +307,46 @@ public class FileUtils {
     }
 
     /**
+     * 传入绝对路径以及根目录, 返回回退根路径字符串
+     *
+     * eg1: 传入 /mnt/project/my-data/data/docker(表示当前处理docker目录), 其中/mnt/project/my-data 为根路径
+     *     则返回回退到根路径的字符串为 ../../
+     * eg2: 用途
+     * <code>
+     *      root@967f6c5d1a49:/opt/docker-minio# mkdir -p /mnt/project/my-data/data/docker
+     *      root@967f6c5d1a49:/opt/docker-minio# cd /mnt/project/my-data/data/docker
+     *      root@967f6c5d1a49:/mnt/project/my-data/data/docker# cd ../../../../../
+     *      root@967f6c5d1a49:/#
+     * </code>
+     *
+     * eg3: 用途
+     * <code>
+     *      root@967f6c5d1a49:/opt/docker-minio# cd /mnt/project/my-data/data/docker
+     *      root@967f6c5d1a49:/mnt/project/my-data/data/docker# cd ../../
+     *      root@967f6c5d1a49:/mnt/project/my-data#
+     * </code>
+     * @param absolutePath 绝对路径, 只支持linux格式路径 /mnt/project/my-data/data/docker
+     * @param rootPath rootPath 跟路径 /mnt/project/my-data 就是你存放某一类数据的根目录
+     * @return 相对路径
+     */
+    public static String returnRootPath(String rootPath, String absolutePath) {
+        if (absolutePath.startsWith("/")) {
+            absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+        }
+        if (rootPath.startsWith("/")) {
+            rootPath = rootPath.substring(0, rootPath.lastIndexOf("/"));
+        }
+        // /data/docker
+        String absoluteAllPath = absolutePath.replace(rootPath, "");
+        String[] split = absoluteAllPath.split("/");
+        StringBuilder relativelyPath = new StringBuilder();
+        for (int i = 0; i < split.length - 2; i++) {
+            relativelyPath.append("../");
+        }
+        return relativelyPath.substring(0, relativelyPath.lastIndexOf("/"));
+    }
+
+    /**
      * 文件名称验证
      * 
      * @param filename 文件名称
@@ -275,4 +399,5 @@ public class FileUtils {
     public static boolean isFileSeparator(char c) {
         return SLASH == c || BACKSLASH == c;
     }
+
 }

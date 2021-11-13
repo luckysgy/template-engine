@@ -10,6 +10,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,12 @@ public class Main {
      *
      * @return 模板列表
      */
-    public static List<String> getVmList(ApplicationContext applicationContext) {
+    public static List<String> getVmList() {
         List<String> templates = new ArrayList<>();
-        List<String> allVmFilePaths = FileUtils.getAllFile(applicationContext.getTargetProjectRootPath() + "/" + SystemConstant.TEMPLATE_DIR_NAME, false, null);
+        List<String> allVmFilePaths = FileUtils.getAllFile(ApplicationContext.targetProjectTemplatePath, false, null);
         allVmFilePaths = FileUtils.winToLinuxForPath(allVmFilePaths);
         for (String vmFilePath : allVmFilePaths) {
-            templates.add(vmFilePath.replace(applicationContext.getTargetProjectRootPath() + "/", ""));
+            templates.add(vmFilePath.replace(ApplicationContext.targetProjectRootPath + "/", ""));
         }
         return templates;
     }
@@ -38,21 +39,26 @@ public class Main {
      * java -jar xxx.jar /mnt/targetProject (跟上目标工程的根路径)
      * @param args args[0] = /mnt/targetProject
      */
-    public static void main(String[] args) {
-        ApplicationContext applicationContext = new ApplicationContext(args[0]);
-        YamlService.loadYaml(applicationContext);
+    public static void main(String[] args) throws IOException {
+        ApplicationContext.init(args[0]);
+
+
+        YamlService.loadYaml();
         YamlService.processYamlValue();
 
-        VelocityUtils.initVelocity(applicationContext);
+        ApplicationContext.createParseTemplateOutPath(EasyDeployProperties.template.getOutPath());
+        String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
+        FileUtils.deleteDir(parseTemplateOutPath);
+
+        VelocityUtils.initVelocity();
         VelocityContext context = new VelocityContext();
 
         context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
+        context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
 
-        String parseTemplateOutPath = applicationContext.createParseTemplateOutPath(EasyDeployProperties.template.getOutPath());
-        FileUtils.deleteDir(parseTemplateOutPath);
         // 渲染模板
         // 获取模板列表
-        List<String> templates = getVmList(applicationContext);
+        List<String> templates = getVmList();
         for (String template : templates) {
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, "utf-8");
@@ -60,5 +66,8 @@ public class Main {
             String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "").replace(".vm", "");
             FileUtils.saveAsFileWriter(outPath, sw.toString());
         }
+
+        // 将需要的脚本文件拷贝到输出项目的shell目录下
+
     }
 }
