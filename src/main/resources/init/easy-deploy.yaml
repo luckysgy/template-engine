@@ -4,8 +4,8 @@ app:
   env: dev
 
 # 指定使能value目录下的哪些yaml文件, 默认不指定就是全部使能
-enableValues:
-  - sgu-env-dev.yaml
+#enableValues:
+#  - demo.yaml
 
 template:
   outPath: out
