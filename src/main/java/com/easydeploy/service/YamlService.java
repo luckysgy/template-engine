@@ -2,6 +2,7 @@ package com.easydeploy.service;
 
 import com.easydeploy.constant.SystemConstant;
 import com.easydeploy.context.ApplicationContext;
+import com.easydeploy.entity.EnableValues;
 import com.easydeploy.properties.App;
 import com.easydeploy.properties.EasyDeployProperties;
 import com.easydeploy.properties.Template;
@@ -13,8 +14,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author shenguangyang
@@ -38,9 +42,23 @@ public class YamlService {
         Yaml yaml = new Yaml();
         InputStream in = null;
         try {
+            // 首先获取 easy-deploy.yaml 中的数据
+            String easyDeployYamlPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME;
+            in = new FileInputStream(easyDeployYamlPath);
+            Map<String, Object> easyDeployYamlData = yaml.loadAs(in, Map.class);
+            if (easyDeployYamlData == null) {
+                throw new RuntimeException(SystemConstant.SYSTEM_YAML_FILE_NAME + " 内容不能为空");
+            }
+            YAML_DATA.putAll(easyDeployYamlData);
+
+            EnableValues enableValues = new EnableValues(YAML_DATA);
+
             List<String> allFile = FileUtils.getAllFile(ApplicationContext.targetProjectValuePath, false, null);
             allFile = FileUtils.winToLinuxForPath(allFile);
             for (String yamlFilePath : allFile) {
+                if (!enableValues.isEnable(yamlFilePath)) {
+                    continue;
+                }
                 in = new FileInputStream(yamlFilePath);
                 Map<String, Object> yamlData = yaml.loadAs(in, Map.class);
                 if (yamlData == null) {
@@ -49,17 +67,11 @@ public class YamlService {
                 }
                 YAML_DATA.putAll(yamlData);
             }
-            String easyDeployYamlPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME;
 
-            in = new FileInputStream(easyDeployYamlPath);
-            Map<String, Object> yamlData = yaml.loadAs(in, Map.class);
-            if (yamlData == null) {
-                throw new RuntimeException(SystemConstant.SYSTEM_YAML_FILE_NAME + " 内容不能为空");
-            }
-            YAML_DATA.putAll(yamlData);
             initInternalVariable();
             loadCustomObject();
 
+            // 从easy-deploy中获取app信息
             App app = EasyDeployProperties.app;
             Map<String, String> appInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_APP);
             if (appInfo == null) {
@@ -69,6 +81,8 @@ public class YamlService {
             app.setName(appInfo.get(SystemConstant.PRO_APP_NAME));
             app.setEnv(appInfo.get(SystemConstant.PRO_APP_ENV));
             app.setVersion(appInfo.get(SystemConstant.PRO_APP_VERSION));
+
+            // 从easy-deploy中获取模板信息
             Map<String, String> templateInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_TEMPLATE);
             if (templateInfo == null) {
                 System.err.println("easy-deploy.yaml === template is null");
@@ -76,7 +90,6 @@ public class YamlService {
             }
             Template template = EasyDeployProperties.template;
             template.setOutPath(templateInfo.get(SystemConstant.PRO_TEMPLATE_OUTPATH));
-
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -56,6 +56,7 @@ public class SystemConstant {
 
     public static String PRO_TEMPLATE = "template";
     public static String PRO_TEMPLATE_OUTPATH = "outPath";
+    public static String PRO_ENABLE_VALUES = "enableValues";
 
     /**
      * 内部变量名

@@ -31,7 +31,7 @@ function debug()
 {
     echo -e "\033[37m$1\033[0m"
 }
-function infolog()
+function info()
 {
     echo -e "\033[32m$1\033[0m"
 }
@@ -46,6 +46,6 @@ function error()
 
 #coloredlog $BG_GREEN $FG_RED "$log"
 #debug "$log"
-#infolog "$log"
+#info "$log"
 # warn "$log"
 #error "$log"

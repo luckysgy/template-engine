@@ -1,5 +1,8 @@
 package com.easydeploy.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author shenguangyang
  * @date 2021-11-11 20:28
@@ -7,4 +10,8 @@ package com.easydeploy.properties;
 public class EasyDeployProperties {
     public static App app = new App();
     public static Template template = new Template();
+    /**
+     * 指定使能value目录下的哪些yaml文件, 默认不指定(为空)就是全部使能
+     */
+    public static List<String> enableValues = new ArrayList<>();
 }
