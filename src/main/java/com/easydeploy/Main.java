@@ -63,7 +63,9 @@ public class Main {
             StringWriter sw = new StringWriter();
             Template tpl = Velocity.getTemplate(template, "utf-8");
             tpl.merge(context, sw);
-            String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "").replace(".vm", "");
+            String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
+                    .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
+                    .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
             FileUtils.saveAsFileWriter(outPath, sw.toString());
         }
 

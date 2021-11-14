@@ -8,6 +8,17 @@ public class SystemConstant {
     public static final String RESOURCES_DIR_INIT = "init";
     public static final String RESOURCES_DIR_SHELL = "shell";
     /**
+     * 将模板文件转成输出文件时候, 程序会自动去掉 .vm 后缀 以及 ED.vm
+     *
+     * 为什么会有ED.vm后缀?
+     * 有时候原始文件没有后缀,那么您也许需要采用ED.vm作为后缀
+     * 比如你的文件是Dockerfile, 即使你加上vm = Dockerfile.vm, vscode依旧会将其当成
+     * Dockerfile文件, 这时候你需要采用ED.vm后缀, DockerfileED.vm, vscode这时会将其
+     * 当成一个模板文件
+     */
+    public static final String DELETE_TEMPLATE_SUFFIX__VM = ".vm";
+    public static final String DELETE_TEMPLATE_SUFFIX__ED_VM = "ED.vm";
+    /**
      * 提示用户是否初始化项目基本目录结构标识
      */
     public static final String SCANNER_INIT_DIR_FLAG = "Y/y";
