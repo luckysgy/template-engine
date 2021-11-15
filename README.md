@@ -44,6 +44,53 @@ value: 存放模板文件中所有的变量值
 easy-deploy.yaml: 系统配置文件, 必须有
 ```
 
+# 使用方法
+
+当安装完本工程之后, 你需要创建一个需要将部署文件放入其中的文件夹, 此时文件夹是空的 (如果是win10, 需要安装git, 使用git命令行执行如下命令)
+
+docker-rabbitmq 目录下是空的
+
+```shell
+PS D:\Git\mnt\data_disk_5000\deploy> cd d:\Git\mnt\data_disk_5000\deploy\docker-rabbitmq
+PS D:\Git\mnt\data_disk_5000\deploy\docker-rabbitmq> bash 
+
+sheng@DESKTOP-G30JSO0 MINGW64 /mnt/data_disk_5000/deploy/docker-rabbitmq (master)
+$ ls
+
+sheng@DESKTOP-G30JSO0 MINGW64 /mnt/data_disk_5000/deploy/docker-rabbitmq (master)
+$ easy-deploy 
+current exec dir: /mnt/data_disk_5000/deploy/docker-rabbitmq
+current directory structure is incomplete, do you need to initialize(y/n): y
+
+sheng@DESKTOP-G30JSO0 MINGW64 /mnt/data_disk_5000/deploy/docker-rabbitmq (master)
+$ ls
+data  easy-deploy.yaml  shell  template  value
+```
+
+> 可以看到如果当前文件夹有缺失的文件或者文件夹会自动提示初始化完整的目录结构
+
+
+
+接下来你需要在value文件夹中编写你的yaml文件, 在template文件夹中编写你的模板文件
+
+
+
+easy-deploy.yaml
+
+```yaml
+app:
+  name: project
+  version: v202107
+  env: dev
+
+# 指定使能value目录下的哪些yaml文件, 默认不指定就是全部使能
+#enableValues:
+#  - demo.yaml
+
+template:
+  outPath: out
+```
+
 
 
 # 内置变量
