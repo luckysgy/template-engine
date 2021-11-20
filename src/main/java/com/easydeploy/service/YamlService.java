@@ -117,17 +117,24 @@ public class YamlService {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof String) {
+                processYamlValueByRecursion(key, (String) value, yamlDataParseResult);
+            }
+        }
+
+        // 查找环境变量
+        Map<String, Object> forResultFromEnv = new HashMap<>(yamlDataParseResult);
+        for (Map.Entry<String, Object> entry : forResultFromEnv.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof String) {
                 String valueString = (String) value;
                 Matcher matcher = pattern.matcher(valueString);
                 while (matcher.find()) {
                     String findKey = matcher.group(1);
-                    value = yamlDataParseResult.get(findKey);
+                    // 查找环境变量
+                    value = envMap.get(findKey);
                     if (value == null) {
-                        // 查找环境变量
-                        value = envMap.get(findKey);
-                        if (value == null) {
-                            continue;
-                        }
+                        continue;
                     }
                     valueString = valueString.replace("${" + findKey + "}", value + "");
                     setYamlQuote(key, valueString);
@@ -135,11 +142,35 @@ public class YamlService {
                 }
             }
         }
+
         //System.out.println("-----------------");
 
 //        for (Map.Entry<String, Object> entry : yamlDataParseResult.entrySet()) {
 //            System.out.println(entry.getKey() + "\t\t" + entry.getValue());
 //        }
+    }
+
+    /**
+     * 递归处理yaml文件
+     * @param key 值带有 ${...} 符号的key
+     * @param valueString 值中含有 ${...}
+     * @return 返回的是值
+     */
+    private static String processYamlValueByRecursion(String key, String valueString, Map<String, Object> yamlDataParseResult) {
+        Matcher matcher = pattern.matcher(valueString);
+        while (matcher.find()) {
+            Object value;
+            String findKey = matcher.group(1);
+            value = yamlDataParseResult.get(findKey);
+            if (value == null) {
+                continue;
+            }
+            value = processYamlValueByRecursion(findKey, (String) value, yamlDataParseResult);
+            valueString = valueString.replace("${" + findKey + "}", value + "");
+        }
+        setYamlQuote(key, valueString);
+        yamlDataParseResult.put(key, valueString);
+        return valueString;
     }
 
     private static void setYamlQuote(String keyStr, Object value) {

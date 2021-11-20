@@ -2,5 +2,5 @@
 $ed.my.name
 /home
 
-/home
-${mysql.dataPath}
+ed.test3.name: /home
+ed.test4.name: /23423/home

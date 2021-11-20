@@ -3,5 +3,5 @@ $Say[0]
 $ed.my.name
 $ed.mysql.dataPath
 
-${ed.test3.name}
-${ed.test4.name}
+ed.test3.name: ${ed.test3.name}
+ed.test4.name: ${ed.test4.name}
