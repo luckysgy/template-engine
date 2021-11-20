@@ -42,7 +42,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         ApplicationContext.init(args[0]);
 
-
         YamlService.loadYaml();
         YamlService.processYamlValue();
 
@@ -67,9 +66,7 @@ public class Main {
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
             FileUtils.saveAsFileWriter(outPath, sw.toString());
+            // System.out.println("done parse template: " + template);
         }
-
-        // 将需要的脚本文件拷贝到输出项目的shell目录下
-
     }
 }

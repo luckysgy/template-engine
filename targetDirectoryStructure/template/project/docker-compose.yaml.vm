@@ -1,0 +1,18 @@
+version: "3"
+services:
+  minio:
+    image: ${ed.storage.minio.image}
+    container_name: minio-server
+    ports:
+      - ${ed.storage.minio.port}:9000
+    volumes: 
+      - "${ed.storage.minio.volumeBasePath}:/data"
+    environment:
+      MINIO_ACCESS_KEY: ${ed.storage.minio.accessKey}
+      MINIO_SECRET_KEY: ${ed.storage.minio.secretKey}
+    command: server /data
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"

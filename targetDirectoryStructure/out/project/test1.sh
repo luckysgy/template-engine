@@ -1,3 +1,6 @@
  Not
-/mnt/data_disk_10000/docker-volume
+$ed.my.name
 /home
+
+/home
+${mysql.dataPath}

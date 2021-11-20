@@ -1,0 +1,18 @@
+version: "3"
+services:
+  minio:
+    image: minio/minio:RELEASE.2021-06-14T01-29-23Z
+    container_name: minio-server
+    ports:
+      - 39000:9000
+    volumes: 
+      - "/mnt/data_disk_10000/docker-volume/minio:/data"
+    environment:
+      MINIO_ACCESS_KEY: minioadmino
+      MINIO_SECRET_KEY: minioadmino
+    command: server /data
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"

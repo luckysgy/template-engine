@@ -125,6 +125,9 @@ public class YamlService {
                     if (value == null) {
                         // 查找环境变量
                         value = envMap.get(findKey);
+                        if (value == null) {
+                            continue;
+                        }
                     }
                     valueString = valueString.replace("${" + findKey + "}", value + "");
                     setYamlQuote(key, valueString);
@@ -132,6 +135,7 @@ public class YamlService {
                 }
             }
         }
+        //System.out.println("-----------------");
 
 //        for (Map.Entry<String, Object> entry : yamlDataParseResult.entrySet()) {
 //            System.out.println(entry.getKey() + "\t\t" + entry.getValue());
@@ -141,8 +145,14 @@ public class YamlService {
     private static void setYamlQuote(String keyStr, Object value) {
         String[] keys = keyStr.split("\\.");
         Map<String, Object> findDataPre = new HashMap<>();
+        Object findData = null;
         for (String key : keys) {
-            Object findData = YAML_DATA.get(key);
+            if (findData == null) {
+                findData = YAML_DATA.get(key);
+            } else {
+                findData = findDataPre.get(key);
+            }
+
             if (findData instanceof Map) {
                 findDataPre = (Map<String, Object>) findData;
             } else {
