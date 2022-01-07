@@ -117,7 +117,7 @@ public class YamlService {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof String) {
-                processYamlValueByRecursion(key, (String) value, yamlDataParseResult);
+                processYamlValueByRecursion(key, String.valueOf(value), yamlDataParseResult);
             }
         }
 
@@ -126,8 +126,9 @@ public class YamlService {
         for (Map.Entry<String, Object> entry : forResultFromEnv.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
+
             if (value instanceof String) {
-                String valueString = (String) value;
+                String valueString = String.valueOf(value);
                 Matcher matcher = pattern.matcher(valueString);
                 while (matcher.find()) {
                     String findKey = matcher.group(1);
@@ -142,12 +143,6 @@ public class YamlService {
                 }
             }
         }
-
-        //System.out.println("-----------------");
-
-//        for (Map.Entry<String, Object> entry : yamlDataParseResult.entrySet()) {
-//            System.out.println(entry.getKey() + "\t\t" + entry.getValue());
-//        }
     }
 
     /**
@@ -165,8 +160,11 @@ public class YamlService {
             if (value == null) {
                 continue;
             }
-            value = processYamlValueByRecursion(findKey, (String) value, yamlDataParseResult);
-            valueString = valueString.replace("${" + findKey + "}", value + "");
+            if (value instanceof String || value instanceof Double || value instanceof Integer || value instanceof Float
+                    || value instanceof Long || value instanceof Short) {
+                value = processYamlValueByRecursion(findKey, String.valueOf(value), yamlDataParseResult);
+                valueString = valueString.replace("${" + findKey + "}", value + "");
+            }
         }
         setYamlQuote(key, valueString);
         yamlDataParseResult.put(key, valueString);
