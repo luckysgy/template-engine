@@ -64,7 +64,7 @@ $velocityCount
 "${ed.my.name}"
 #set($test1 = "#rootPath/test1")
 $test1
-cd #rootPath/template
+cd #rootPath/outProperties
 #rootPath
 #dataPath
 source #shell("color-log.sh")

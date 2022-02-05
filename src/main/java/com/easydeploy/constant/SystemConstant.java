@@ -65,8 +65,8 @@ public class SystemConstant {
     public static String PRO_APP_VERSION = "version";
     public static String PRO_APP_ENV = "env";
 
-    public static String PRO_TEMPLATE = "template";
-    public static String PRO_TEMPLATE_OUTPATH = "outPath";
+    public static String PRO_OUT = "out";
+    public static String PRO_OUT_PATH = "outPath";
     public static String PRO_ENABLE_VALUES = "enableValues";
 
     /**

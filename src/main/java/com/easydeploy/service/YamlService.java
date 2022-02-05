@@ -5,7 +5,7 @@ import com.easydeploy.context.ApplicationContext;
 import com.easydeploy.entity.EnableValues;
 import com.easydeploy.properties.App;
 import com.easydeploy.properties.EasyDeployProperties;
-import com.easydeploy.properties.Template;
+import com.easydeploy.properties.OutProperties;
 import com.easydeploy.utils.FileUtils;
 import com.easydeploy.directive.RootPath;
 import org.yaml.snakeyaml.Yaml;
@@ -14,11 +14,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * @author shenguangyang
@@ -83,13 +80,13 @@ public class YamlService {
             app.setVersion(appInfo.get(SystemConstant.PRO_APP_VERSION));
 
             // 从easy-deploy中获取模板信息
-            Map<String, String> templateInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_TEMPLATE);
-            if (templateInfo == null) {
-                System.err.println("easy-deploy.yaml === template is null");
+            Map<String, String> outConfigInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_OUT);
+            if (outConfigInfo == null) {
+                System.err.println("easy-deploy.yaml === out is null");
                 return;
             }
-            Template template = EasyDeployProperties.template;
-            template.setOutPath(templateInfo.get(SystemConstant.PRO_TEMPLATE_OUTPATH));
+            OutProperties outProperties = EasyDeployProperties.outProperties;
+            outProperties.setPath(outConfigInfo.get(SystemConstant.PRO_OUT_PATH));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

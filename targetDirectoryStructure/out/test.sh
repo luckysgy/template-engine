@@ -39,7 +39,7 @@ This is maple.
 "${ed.minio.volumebasepath}"
 "${ed.my.name}"
 ../test1
-cd ../template
+cd ../outProperties
 ..
 ../data
 source ../shell/color-log.sh

@@ -10,6 +10,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class Main {
         YamlService.loadYaml();
         YamlService.processYamlValue();
 
-        ApplicationContext.createParseTemplateOutPath(EasyDeployProperties.template.getOutPath());
+        ApplicationContext.createParseTemplateOutPath(EasyDeployProperties.outProperties.getPath());
         String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
         FileUtils.deleteDir(parseTemplateOutPath);
 
@@ -66,6 +67,9 @@ public class Main {
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
             FileUtils.saveAsFileWriter(outPath, sw.toString());
+            if (!new File(outPath).setReadOnly()) {
+                System.err.println("set [ " + outPath + " ] read only fail");
+            }
             // System.out.println("done parse template: " + template);
         }
     }

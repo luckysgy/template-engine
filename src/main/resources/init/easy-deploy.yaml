@@ -7,5 +7,6 @@ app:
 #enableValues:
 #  - demo.yaml
 
-template:
-  outPath: out
+out:
+  path: out
+  isOnlyRead: true

@@ -40,7 +40,7 @@ sh install.sh
 
 ```text
 data: 存放你部署时候需要的数据
-template: 存放模板数据, 每个文件必须以.vm结尾
+outProperties: 存放模板数据, 每个文件必须以.vm结尾
 shell: 存放本项目自带的脚本
 value: 存放模板文件中所有的变量值
 easy-deploy.yaml: 系统配置文件, 必须有
@@ -66,7 +66,7 @@ current directory structure is incomplete, do you need to initialize(y/n): y
 
 sheng@DESKTOP-G30JSO0 MINGW64 /mnt/data_disk_5000/deploy/docker-rabbitmq (master)
 $ ls
-data  easy-deploy.yaml  shell  template  value
+data  easy-deploy.yaml  shell  outProperties  value
 ```
 
 > 可以看到如果当前文件夹有缺失的文件或者文件夹会自动提示初始化完整的目录结构
@@ -89,7 +89,7 @@ app:
 #enableValues:
 #  - demo.yaml
 
-template:
+outProperties:
   outPath: out
 ```
 

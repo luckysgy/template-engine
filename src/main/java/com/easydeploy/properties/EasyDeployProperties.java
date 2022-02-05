@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class EasyDeployProperties {
     public static App app = new App();
-    public static Template template = new Template();
+    public static OutProperties outProperties = new OutProperties();
     /**
      * 指定使能value目录下的哪些yaml文件, 默认不指定(为空)就是全部使能
      */
