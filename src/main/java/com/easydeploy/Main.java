@@ -67,9 +67,12 @@ public class Main {
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
             FileUtils.saveAsFileWriter(outPath, sw.toString());
-            if (!new File(outPath).setReadOnly()) {
-                System.err.println("set [ " + outPath + " ] read only fail");
+            if (EasyDeployProperties.outProperties.getOnlyRead()) {
+                if (!new File(outPath).setReadOnly()) {
+                    System.err.println("set [ " + outPath + " ] read only fail");
+                }
             }
+
             // System.out.println("done parse template: " + template);
         }
     }

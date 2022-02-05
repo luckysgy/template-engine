@@ -80,13 +80,15 @@ public class YamlService {
             app.setVersion(appInfo.get(SystemConstant.PRO_APP_VERSION));
 
             // 从easy-deploy中获取模板信息
-            Map<String, String> outConfigInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_OUT);
+            Map<String, Object> outConfigInfo = (Map<String, Object>) YAML_DATA.get(SystemConstant.PRO_OUT);
             if (outConfigInfo == null) {
                 System.err.println("easy-deploy.yaml === out is null");
                 return;
             }
             OutProperties outProperties = EasyDeployProperties.outProperties;
-            outProperties.setPath(outConfigInfo.get(SystemConstant.PRO_OUT_PATH));
+            outProperties.setPath(String.valueOf(outConfigInfo.get(SystemConstant.PRO_OUT_PATH)));
+            Boolean isOnlyRead = Boolean.valueOf(String.valueOf(outConfigInfo.get(SystemConstant.PRO_OUT_IS_ONLY_READ)));
+            outProperties.setOnlyRead(isOnlyRead);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
