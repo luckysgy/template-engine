@@ -22,19 +22,20 @@ public class VelocityUtils {
      * 初始化vm方法
      */
     public static void initVelocity() {
-        Properties p = new Properties();
+        Properties prop = new Properties();
 
         try {
             // 加载classpath目录下的vm文件
             //p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            p.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, ApplicationContext.targetProjectRootPath);
-            p.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-            loadCustomDirective("com.easydeploy.directive", p);
+            prop.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, ApplicationContext.targetProjectRootPath);
+            prop.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+            loadCustomDirective("com.easydeploy.directive", prop);
             // 定义字符集
-            p.setProperty(Velocity.INPUT_ENCODING, "UTF-8");
-            p.setProperty(Velocity.OUTPUT_ENCODING, "UTF-8");
+            prop.setProperty(Velocity.ENCODING_DEFAULT, "UTF-8");
+            prop.setProperty(Velocity.INPUT_ENCODING, "UTF-8");
+            prop.setProperty(Velocity.OUTPUT_ENCODING, "UTF-8");
             // 初始化Velocity引擎，指定配置Properties
-            Velocity.init(p);
+            Velocity.init(prop);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

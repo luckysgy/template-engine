@@ -60,7 +60,7 @@ public class Main {
         List<String> templates = getVmList();
         for (String template : templates) {
             StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, "utf-8");
+            Template tpl = Velocity.getTemplate(template, "UTF-8");
             tpl.merge(context, sw);
             String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
                     .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")

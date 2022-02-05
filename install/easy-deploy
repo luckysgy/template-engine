@@ -2,4 +2,4 @@
 
 cur_exec_dir=$(pwd)
 echo "current exec dir: "$cur_exec_dir
-java -jar /usr/bin/easy-deploy-jar-with-dependencies.jar $cur_exec_dir
+java -Dfile.encoding=utf-8 -jar /usr/bin/easy-deploy-jar-with-dependencies.jar $cur_exec_dir
