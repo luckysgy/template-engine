@@ -8,5 +8,4 @@ app:
 #  - demo.yaml
 
 out:
-  path: out
   isOnlyRead: true

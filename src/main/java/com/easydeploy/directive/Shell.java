@@ -13,6 +13,8 @@ import org.apache.velocity.runtime.parser.node.Node;
 import java.io.IOException;
 import java.io.Writer;
 
+import static com.easydeploy.constant.DirectiveConstant.SHELL_NAME;
+
 /**
  * @author shenguangyang
  * @date 2021-11-13 7:34
@@ -32,12 +34,11 @@ public class Shell extends Directive {
     @Override
     public String getName() {
         //指令名称，也就是在模板中使用的指令名字
-        return "shell";
+        return SHELL_NAME;
     }
 
     /**
      * getType:当前有LINE,BLOCK两个值，line行指令，不要end结束符，block块指令，需要end结束符
-     * @return
      */
     @Override
     public int getType() {

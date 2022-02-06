@@ -5,6 +5,7 @@ import com.easydeploy.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -40,9 +41,16 @@ public class ApplicationContext {
      */
     public static String targetProjectValuePath;
 
+    public static final String EASY_DEPLOY_YAML_FILE_NAME = "easy-deploy.yaml";
+    /**
+     * 执行easy-deploy所在目录
+     */
+    public static String CURRENT_DIR = "";
+
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void init(String targetProjectRootPath) throws IOException {
+    public static void init(String currentDir) throws IOException {
+        ApplicationContext.targetProjectRootPath = findEasyDeployRootDir(currentDir);
         ApplicationContext.targetProjectRootPath = FileUtils.winToLinuxForPath(targetProjectRootPath);
         if (ApplicationContext.targetProjectRootPath.endsWith("/")) {
             ApplicationContext.targetProjectRootPath = targetProjectRootPath.substring(0, targetProjectRootPath.lastIndexOf("/"));
@@ -52,6 +60,36 @@ public class ApplicationContext {
         ApplicationContext.targetProjectTemplatePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.TEMPLATE_DIR_NAME;
         ApplicationContext.targetProjectValuePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.VALUE_DIR_NAME;
         initDir();
+    }
+
+    /**
+     * 查找当前目录以及父级目录中存在easy-deploy.yaml所在根目录
+     * @param currentDir 执行easy-deploy命令所在的目录
+     */
+    public static String findEasyDeployRootDir(String currentDir) {
+        if (currentDir == null) {
+            throw new RuntimeException("current dir is null");
+        }
+        CURRENT_DIR = currentDir;
+
+        if (currentDir.contains(":")) {
+            currentDir = currentDir.substring(currentDir.indexOf(":") + 1);
+        }
+        String findDir = currentDir.replace("\\", "/");
+        if (findDir.endsWith("/")) {
+            findDir = findDir.substring(0, findDir.length() - 1);
+        }
+
+        while (!"".equals(findDir) && !"/".equals(findDir)) {
+            File file = new File(findDir + "/" + EASY_DEPLOY_YAML_FILE_NAME);
+            if (file.exists()) {
+                return findDir;
+            } else {
+                findDir = findDir.substring(0, findDir.lastIndexOf("/"));
+            }
+        }
+        // System.out.println("not find easy-deploy root dir! currentDir is " + currentDir);
+        return currentDir;
     }
 
     /**
@@ -82,6 +120,7 @@ public class ApplicationContext {
                 if (SystemConstant.SCANNER_INIT_DIR_FLAG.contains(isInitDir)) {
                     FileUtils.copyFileFromJar(SystemConstant.RESOURCES_DIR_INIT + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME, filePath);
                 } else {
+                    System.out.println(".");
                     System.exit(0);
                 }
             }
@@ -125,4 +164,20 @@ public class ApplicationContext {
             ApplicationContext.templateOutPutPath = targetProjectRootPath + "/" + ApplicationContext.templateOutPutPath;
         }
     }
+
+    /**
+     * 删除输出目录中的所有文件, 不删除目录, 只删除文件
+     */
+    public static void deleteTemplateOutFiles() {
+        List<String> outAllFile = FileUtils.getAllFile(templateOutPutPath, false, null);
+        for (String outFilePath : outAllFile) {
+            File file = new File(outFilePath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    throw new RuntimeException(String.format("delete out file [%s] fail%n", outFilePath));
+                }
+            }
+        }
+    }
+
 }

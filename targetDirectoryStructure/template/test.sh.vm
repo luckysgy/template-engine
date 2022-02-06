@@ -68,4 +68,7 @@ cd #rootPath/outProperties
 #rootPath
 #dataPath
 source #shell("color-log.sh")
+#rm("test.sh")
+
+#rm("conf/test.tar")
 warn "cd #rootPath"

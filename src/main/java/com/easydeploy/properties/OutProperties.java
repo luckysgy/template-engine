@@ -5,7 +5,6 @@ package com.easydeploy.properties;
  * @date 2021-11-11 20:47
  */
 public class OutProperties {
-    private String path;
     /**
      * 输出的文件是否只读
      */
@@ -17,13 +16,5 @@ public class OutProperties {
 
     public void setOnlyRead(Boolean onlyRead) {
         isOnlyRead = onlyRead;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 }

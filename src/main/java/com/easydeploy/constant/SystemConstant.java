@@ -56,6 +56,10 @@ public class SystemConstant {
      */
     public static final String TEMPLATE_KEY_PRE = "ed";
     /**
+     * 解析模板输出路径, 在工程的out目录下
+     */
+    public static final String TEMPLATE_OUT_PATH = "out";
+    /**
      * 模板自定义对象的前置
      */
     public static final String TEMPLATE_CUSTOM_OBJECT_KEY_PRE = "utils";
@@ -66,7 +70,6 @@ public class SystemConstant {
     public static String PRO_APP_ENV = "env";
 
     public static String PRO_OUT = "out";
-    public static String PRO_OUT_PATH = "path";
     public static String PRO_OUT_IS_ONLY_READ = "isOnlyRead";
     public static String PRO_ENABLE_VALUES = "enableValues";
 

@@ -86,7 +86,6 @@ public class YamlService {
                 return;
             }
             OutProperties outProperties = EasyDeployProperties.outProperties;
-            outProperties.setPath(String.valueOf(outConfigInfo.get(SystemConstant.PRO_OUT_PATH)));
             Boolean isOnlyRead = Boolean.valueOf(String.valueOf(outConfigInfo.get(SystemConstant.PRO_OUT_IS_ONLY_READ)));
             outProperties.setOnlyRead(isOnlyRead);
 

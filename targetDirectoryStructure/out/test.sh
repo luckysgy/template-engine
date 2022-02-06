@@ -43,4 +43,7 @@ cd ../outProperties
 ..
 ../data
 source ../shell/color-log.sh
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/test/test.sh
+
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/test/conf/test.tar
 warn "cd .."

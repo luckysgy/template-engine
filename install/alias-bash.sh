@@ -1,0 +1,1 @@
+alias ed="source /usr/bin/easy-deploy.sh"

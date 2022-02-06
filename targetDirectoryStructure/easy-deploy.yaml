@@ -10,5 +10,4 @@ app:
   #- test2.yaml
 
 out:
-  path: out
   isOnlyRead: true

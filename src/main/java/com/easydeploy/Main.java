@@ -6,6 +6,8 @@ import com.easydeploy.properties.EasyDeployProperties;
 import com.easydeploy.service.YamlService;
 import com.easydeploy.utils.FileUtils;
 import com.easydeploy.utils.VelocityUtils;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -21,6 +23,7 @@ import java.util.List;
  * @date 2021-11-11 19:30
  */
 public class Main {
+    private static final CommandParser commandParser = new CommandParser();
     /**
      * 获取模板信息
      *
@@ -40,40 +43,60 @@ public class Main {
      * java -jar xxx.jar /mnt/targetProject (跟上目标工程的根路径)
      * @param args args[0] = /mnt/targetProject
      */
-    public static void main(String[] args) throws IOException {
-        ApplicationContext.init(args[0]);
+    public static void main(String[] args) {
+        try {
+            CommandLine cli = commandParser.exec(args);
+            String currentDir = "";
 
-        YamlService.loadYaml();
-        YamlService.processYamlValue();
-
-        ApplicationContext.createParseTemplateOutPath(EasyDeployProperties.outProperties.getPath());
-        String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
-        FileUtils.deleteDir(parseTemplateOutPath);
-
-        VelocityUtils.initVelocity();
-        VelocityContext context = new VelocityContext();
-
-        context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
-        context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
-
-        // 渲染模板
-        // 获取模板列表
-        List<String> templates = getVmList();
-        for (String template : templates) {
-            StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, "UTF-8");
-            tpl.merge(context, sw);
-            String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
-                    .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
-                    .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
-            FileUtils.saveAsFileWriter(outPath, sw.toString());
-            if (EasyDeployProperties.outProperties.getOnlyRead()) {
-                if (!new File(outPath).setReadOnly()) {
-                    System.err.println("set [ " + outPath + " ] read only fail");
-                }
+            if (cli.hasOption("cd")) {
+                // 获取参数“cd”对应的参数值，如果为空则返回1（默认值）
+                currentDir = String.valueOf(cli.getOptionValue("cd",""));
+                ApplicationContext.init(currentDir);
+                // 输出项目根目录, 脚本会接收该路径
+                System.out.println(ApplicationContext.targetProjectRootPath);
             }
 
-            // System.out.println("done parse template: " + template);
+            // 判断是否解析模板
+            if (cli.hasOption("pt")){
+                boolean isParseTemplate = Boolean.parseBoolean(cli.getOptionValue("pt","false"));
+                if (!isParseTemplate) {
+                    return;
+                }
+                YamlService.loadYaml();
+                YamlService.processYamlValue();
+
+                ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_PATH);
+
+                ApplicationContext.deleteTemplateOutFiles();
+
+                VelocityUtils.initVelocity();
+                VelocityContext context = new VelocityContext();
+
+                context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
+                context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
+
+                // 渲染模板
+                // 获取模板列表
+                String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
+                List<String> templates = getVmList();
+                for (String template : templates) {
+                    StringWriter sw = new StringWriter();
+                    Template tpl = Velocity.getTemplate(template, "UTF-8");
+                    tpl.merge(context, sw);
+                    String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
+                            .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
+                            .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
+                    FileUtils.saveAsFileWriter(outPath, sw.toString());
+                    if (EasyDeployProperties.outProperties.getOnlyRead()) {
+                        if (!new File(outPath).setReadOnly()) {
+                            throw new RuntimeException("set [ " + outPath + " ] read only fail");
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(".");
         }
     }
 }

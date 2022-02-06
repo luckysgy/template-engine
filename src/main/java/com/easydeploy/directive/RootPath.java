@@ -1,8 +1,8 @@
 package com.easydeploy.directive;
 
+import com.easydeploy.constant.DirectiveConstant;
 import com.easydeploy.context.ApplicationContext;
 import com.easydeploy.utils.FileUtils;
-import com.easydeploy.velocity.CustomVelocity;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -18,7 +18,6 @@ import java.io.Writer;
  * @date 2021-11-13 7:34
  */
 public class RootPath extends Directive {
-
 
     /**
      * 相对根路径
@@ -41,12 +40,11 @@ public class RootPath extends Directive {
     @Override
     public String getName() {
         //指令名称，也就是在模板中使用的指令名字
-        return "rootPath";
+        return DirectiveConstant.ROOT_PATH_NAME;
     }
 
     /**
      * getType:当前有LINE,BLOCK两个值，line行指令，不要end结束符，block块指令，需要end结束符
-     * @return
      */
     @Override
     public int getType() {
