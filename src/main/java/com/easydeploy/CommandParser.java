@@ -20,9 +20,13 @@ public class CommandParser {
         Option optParseTemplate = new Option("pt","parse template",true,"true | false");
         optCurrentDir.setRequired(true);
 
+        Option optShellPid = new Option("sp","shell pid",true,"passed in by the shell");
+        optShellPid.setRequired(true);
+
         Options options = new Options();
         options.addOption(optCurrentDir);
         options.addOption(optParseTemplate);
+        options.addOption(optShellPid);
 
         CommandLineParser cliParser = new DefaultParser();
         HelpFormatter helpFormatter = new HelpFormatter();

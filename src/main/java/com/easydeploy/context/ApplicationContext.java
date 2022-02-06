@@ -3,8 +3,11 @@ package com.easydeploy.context;
 import com.easydeploy.constant.SystemConstant;
 import com.easydeploy.utils.FileUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,7 +20,7 @@ public class ApplicationContext {
     /**
      * 目标工程的根目录
      */
-    public static String targetProjectRootPath;
+    public static String targetProjectRootPath = ".";
 
     public static String templateOutPutPath;
 
@@ -46,6 +49,9 @@ public class ApplicationContext {
      * 执行easy-deploy所在目录
      */
     public static String CURRENT_DIR = "";
+
+    public static final String SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR = "/tmp/easy-deploy";
+    public static final String SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_PRE = "path-";
 
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -180,4 +186,10 @@ public class ApplicationContext {
         }
     }
 
+    public static void writeTargetProjectRootPathToFile(String shellPid) throws IOException {
+        FileUtils.mkdirs(SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR);
+        InputStream inputStream = new ByteArrayInputStream(targetProjectRootPath.getBytes(StandardCharsets.UTF_8));
+        FileUtils.writeToFile(inputStream, SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR + "/" +
+                SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_PRE + shellPid);
+    }
 }

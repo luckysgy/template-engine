@@ -43,17 +43,20 @@ public class Main {
      * java -jar xxx.jar /mnt/targetProject (跟上目标工程的根路径)
      * @param args args[0] = /mnt/targetProject
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String currentDir = "";
+        String shellPid = "0";
         try {
             CommandLine cli = commandParser.exec(args);
-            String currentDir = "";
+            if (cli.hasOption("sp")) {
+                shellPid = String.valueOf(cli.getOptionValue("sp","0"));
+            }
 
             if (cli.hasOption("cd")) {
                 // 获取参数“cd”对应的参数值，如果为空则返回1（默认值）
                 currentDir = String.valueOf(cli.getOptionValue("cd",""));
                 ApplicationContext.init(currentDir);
-                // 输出项目根目录, 脚本会接收该路径
-                System.out.println(ApplicationContext.targetProjectRootPath);
+                ApplicationContext.writeTargetProjectRootPathToFile(shellPid);
             }
 
             // 判断是否解析模板
@@ -96,7 +99,7 @@ public class Main {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(".");
+            ApplicationContext.writeTargetProjectRootPathToFile(shellPid);
         }
     }
 }

@@ -19,11 +19,6 @@ usage() {
 #-n选项后接选项解析错误时提示的脚本名字
 ARGS=`getopt -o j:h:: --long jump:,help -n "$0" -- "$@"`
 
-if [ $? != 0 ]; then
-  echo "Terminating..."
-  return
-fi
-
 #将规范化后的命令行参数分配至位置参数（$1,$2,...)
 eval set -- "${ARGS}"
 
@@ -50,8 +45,9 @@ while true; do
     esac
 done
 
-easyDeployRootDir=$(java -Dfile.encoding=utf-8 -jar /usr/bin/easy-deploy-jar-with-dependencies.jar -cd $cur_exec_dir -pt ${isParseTemplate} | tail -1)
+java -Dfile.encoding=utf-8 -jar /usr/bin/easy-deploy-jar-with-dependencies.jar -cd $cur_exec_dir -pt ${isParseTemplate} -sp $$
 
+easyDeployRootDir=`head -1 /tmp/easy-deploy/path-$$`
 # 跳转目录
 if [ "$JUMP_WORK_DIR" = "t" ]; then
   cd ${easyDeployRootDir}/template
@@ -68,3 +64,4 @@ elif [ "$JUMP_WORK_DIR" = "d" ]; then
 fi
 
 echo "easy-deploy root dir is "$easyDeployRootDir
+rm -rf /tmp/easy-deploy/path-$$
