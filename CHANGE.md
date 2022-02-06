@@ -11,3 +11,4 @@
   - ed -j d --> 跳转到data目录下
   - ed -j o --> 跳转到out目录下
   - ed -j t --> 跳转到template目录下
+- 清空当前shell环境中, JUMP_WORK_DIR变量缓存, 否则当跳转某个工作目录之后, 手动执行cd xxx, 当重新渲染模板, 即执行 `ed` 命令之后, 又会回到上次跳转的目录

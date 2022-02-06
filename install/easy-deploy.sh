@@ -22,6 +22,8 @@ ARGS=`getopt -o j:h:: --long jump:,help -n "$0" -- "$@"`
 #将规范化后的命令行参数分配至位置参数（$1,$2,...)
 eval set -- "${ARGS}"
 
+# 清空当前shell环境中, JUMP_WORK_DIR变量缓存
+JUMP_WORK_DIR=""
 isParseTemplate="false"
 while true; do
     case $1 in
