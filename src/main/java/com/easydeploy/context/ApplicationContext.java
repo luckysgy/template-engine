@@ -50,12 +50,18 @@ public class ApplicationContext {
      */
     public static String CURRENT_DIR = "";
 
+    /**
+     * 调用当前应用的shell脚本进行id
+     */
+    public static String shellPid = "0";
+
     public static final String SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR = "/tmp/easy-deploy";
     public static final String SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_PRE = "path-";
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void init(String currentDir) throws IOException {
+    public static void init(String currentDir, String shellPid) throws IOException {
+        ApplicationContext.shellPid = shellPid;
         ApplicationContext.targetProjectRootPath = findEasyDeployRootDir(currentDir);
         ApplicationContext.targetProjectRootPath = FileUtils.winToLinuxForPath(targetProjectRootPath);
         if (ApplicationContext.targetProjectRootPath.endsWith("/")) {
@@ -94,7 +100,7 @@ public class ApplicationContext {
                 findDir = findDir.substring(0, findDir.lastIndexOf("/"));
             }
         }
-        // System.out.println("not find easy-deploy root dir! currentDir is " + currentDir);
+        System.out.println("not find easy-deploy root dir! (not find easy-deploy.yaml file) currentDir is " + currentDir);
         return currentDir;
     }
 
@@ -126,14 +132,14 @@ public class ApplicationContext {
                 if (SystemConstant.SCANNER_INIT_DIR_FLAG.contains(isInitDir)) {
                     FileUtils.copyFileFromJar(SystemConstant.RESOURCES_DIR_INIT + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME, filePath);
                 } else {
-                    System.out.println(".");
+                    writeTargetProjectRootPathToFile();
                     System.exit(0);
                 }
             }
         }
     }
 
-    private static String createDir(String path, String isInitDir) {
+    private static String createDir(String path, String isInitDir) throws IOException {
         File file = new File(path);
         boolean exist = file.exists();
         if (exist) {
@@ -154,6 +160,7 @@ public class ApplicationContext {
                 throw new RuntimeException("Directory creation failed: " + path);
             }
         } else {
+            writeTargetProjectRootPathToFile();
             System.exit(0);
         }
         return isInitDir;
@@ -186,7 +193,7 @@ public class ApplicationContext {
         }
     }
 
-    public static void writeTargetProjectRootPathToFile(String shellPid) throws IOException {
+    public static void writeTargetProjectRootPathToFile() throws IOException {
         FileUtils.mkdirs(SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR);
         InputStream inputStream = new ByteArrayInputStream(targetProjectRootPath.getBytes(StandardCharsets.UTF_8));
         FileUtils.writeToFile(inputStream, SAVE_TARGET_PROJECT_ROOT_PATH_TEMP_FILE_DIR + "/" +

@@ -34,9 +34,9 @@ public class Rm extends Directive {
 
     @Override
     public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        String templateRelativePath = context.getCurrentTemplateName().replaceFirst(SystemConstant.TEMPLATE_DIR_NAME, SystemConstant.TEMPLATE_OUT_PATH)
-                .substring(0, context.getCurrentTemplateName().lastIndexOf("/"));
-        String templateDir = ApplicationContext.targetProjectRootPath + "/" + templateRelativePath;
+        String outDirRelativePath = context.getCurrentTemplateName().replaceFirst(SystemConstant.TEMPLATE_DIR_NAME, SystemConstant.TEMPLATE_OUT_PATH);
+        outDirRelativePath = outDirRelativePath.substring(0, outDirRelativePath.lastIndexOf("/"));
+        String outDir = ApplicationContext.targetProjectRootPath + "/" + outDirRelativePath;
         Node node1 = node.jjtGetChild(0);
         String deleteFilePath = "";
         if (node1 != null) {
@@ -44,7 +44,7 @@ public class Rm extends Directive {
             if (deleteFilePath != null && !deleteFilePath.equals("")) {
                 deleteFilePath = deleteFilePath.replace("\"", "");
                 //将结果写入到writer中，相当于把结果输出
-                writer.write("rm -rf " + templateDir + "/" + deleteFilePath  + "\n");
+                writer.write("rm -rf " + outDir + "/" + deleteFilePath  + "\n");
             }
         }
         return true;

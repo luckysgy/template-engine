@@ -55,8 +55,8 @@ public class Main {
             if (cli.hasOption("cd")) {
                 // 获取参数“cd”对应的参数值，如果为空则返回1（默认值）
                 currentDir = String.valueOf(cli.getOptionValue("cd",""));
-                ApplicationContext.init(currentDir);
-                ApplicationContext.writeTargetProjectRootPathToFile(shellPid);
+                ApplicationContext.init(currentDir, shellPid);
+                ApplicationContext.writeTargetProjectRootPathToFile();
             }
 
             // 判断是否解析模板
@@ -99,7 +99,7 @@ public class Main {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ApplicationContext.writeTargetProjectRootPathToFile(shellPid);
+            ApplicationContext.writeTargetProjectRootPathToFile();
         }
     }
 }
