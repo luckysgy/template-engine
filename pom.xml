@@ -65,7 +65,6 @@
     <build>
         <finalName>easy-deploy</finalName>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -75,6 +74,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <outputDirectory>install/</outputDirectory>
                     <!-- MainClass in mainfest make a executable jar -->
                     <archive>
                         <manifest>
