@@ -43,8 +43,23 @@ public class Rm extends Directive {
             deleteFilePath = node1.literal();
             if (deleteFilePath != null && !deleteFilePath.equals("")) {
                 deleteFilePath = deleteFilePath.replace("\"", "");
-                //将结果写入到writer中，相当于把结果输出
-                writer.write("rm -rf " + outDir + "/" + deleteFilePath  + "\n");
+
+                // 去掉首尾空格
+                String regStartSpace = "^[　 ]*";
+                String regEndSpace = "[　 ]*$";
+
+                // 第一个是去掉前端的空格， 第二个是去掉后端的空格
+                deleteFilePath = deleteFilePath.replaceAll(regStartSpace, "").replaceAll(regEndSpace, "");
+                if (deleteFilePath.contains(" ")) {
+                    for (String filePath : deleteFilePath.split(" ")) {
+                        //将结果写入到writer中，相当于把结果输出
+                        writer.write("rm -rf " + outDir + "/" + filePath  + "\n");
+                    }
+                } else {
+                    //将结果写入到writer中，相当于把结果输出
+                    writer.write("rm -rf " + outDir + "/" +  deleteFilePath + "\n");
+                }
+
             }
         }
         return true;

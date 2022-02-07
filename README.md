@@ -135,6 +135,16 @@ $ed.rootPath
 
 ```vbscript
 #rm("out目录下文件相对out路径")
+
+eg:
+#rm("data.tar") 
+渲染之后的结果 
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
+
+#rm("conf/test.tar data.tar")
+渲染之后的结果 
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/conf/test.tar
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
 ```
 
 仅限于删除out目录下的文件, 解析之后是删除的是文件全路径, 目的防止从配置文件中动态传入删除的文件路径, 如果用户不小心传入了 /, /usr, 那会造成毁灭性的灾难, 比如 rm -rf ${ed.name}, 如果name = /usr, 则会变成 rm -rf /usr

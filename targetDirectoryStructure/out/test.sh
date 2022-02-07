@@ -46,4 +46,5 @@ source ../shell/color-log.sh
 rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/test.sh
 
 rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/conf/test.tar
+rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
 warn "cd .."
