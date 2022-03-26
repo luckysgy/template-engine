@@ -1,5 +1,13 @@
 # 让部署变得简单
 
+# idea运行参数
+
+-cd D:\code\my\project-start\deploy -pt true -sp 1
+说明:
+sp: shell pid, 调用方的shell脚本的运行进程id
+pt: parse template, 是否解析模板
+cd: current dir, 被解析工程的根目录或子目录(value/xxx 或者 template/xxx等等)
+
 # 都有哪些功能
 
 - 解析yaml文件将值传入到vm模板文件中

@@ -1,5 +1,6 @@
 package com.easydeploy.utils;
 
+import com.easydeploy.constant.SystemConstant;
 import com.easydeploy.context.ApplicationContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.directive.Directive;
@@ -27,7 +28,7 @@ public class VelocityUtils {
         try {
             // 加载classpath目录下的vm文件
             //p.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            prop.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, ApplicationContext.targetProjectRootPath);
+            prop.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, ApplicationContext.targetProjectRootPath + "," +  ApplicationContext.targetProjectModulesPath);
             prop.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
             loadCustomDirective("com.easydeploy.directive", prop);
             // 定义字符集

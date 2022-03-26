@@ -23,6 +23,13 @@ This is oak.
 3
 This is maple.
 
+# ---------------- parse
+
+# ---------------------------- start module
+/code/my/easy-deploy/targetDirectoryStructure
+# ---------------------------- end module
+
+
 对字符串截取 100
 1
 对字符串截取 101

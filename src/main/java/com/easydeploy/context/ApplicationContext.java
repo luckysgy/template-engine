@@ -28,6 +28,10 @@ public class ApplicationContext {
      * 目标工程的数据目录
      */
     public static String targetProjectDataPath;
+    /**
+     * 目标工程存放 modules 的文件夹
+     */
+    public static String targetProjectModulesPath;
 
     /**
      * 目标工程存放shell脚本的目录
@@ -71,6 +75,7 @@ public class ApplicationContext {
         ApplicationContext.targetProjectShellPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.SHELL_DIR_NAME;
         ApplicationContext.targetProjectTemplatePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.TEMPLATE_DIR_NAME;
         ApplicationContext.targetProjectValuePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.VALUE_DIR_NAME;
+        ApplicationContext.targetProjectModulesPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.TEMPLATE_MODULES_DIR_NAME;
         initDir();
     }
 
@@ -119,7 +124,7 @@ public class ApplicationContext {
         isInitDir = createDir(ApplicationContext.targetProjectDataPath, isInitDir);
         isInitDir = createDir(ApplicationContext.targetProjectShellPath, isInitDir);
         isInitDir = createDir(ApplicationContext.targetProjectValuePath, isInitDir);
-
+        isInitDir = createDir(ApplicationContext.targetProjectModulesPath, isInitDir);
 
         String filePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.SYSTEM_YAML_FILE_NAME;
         File file = new File(filePath);

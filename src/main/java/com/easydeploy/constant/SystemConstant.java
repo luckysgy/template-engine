@@ -27,6 +27,7 @@ public class SystemConstant {
      * 存放在项目根目录下
      */
     public static final String TEMPLATE_DIR_NAME = "template";
+    public static final String TEMPLATE_MODULES_DIR_NAME = "modules";
 
     /**
      * 存放值配置文件的文件夹名称
