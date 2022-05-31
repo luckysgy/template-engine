@@ -5,6 +5,7 @@ import com.easydeploy.context.ApplicationContext;
 import com.easydeploy.utils.CommandExecutor;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -37,14 +38,10 @@ public class UserCommand {
 
     public void init() throws Exception {
         loadYaml();
-        List<String> list = searchCommand("build minio redis");
-        for (String s : list) {
-            execCommand(s);
-        }
     }
 
     private void loadYaml() throws Exception {
-        long t1 = System.currentTimeMillis();
+//        long t1 = System.currentTimeMillis();
         Yaml yaml = new Yaml();
         FileReader in = null;
         try {
@@ -67,8 +64,8 @@ public class UserCommand {
                 in.close();
             }
         }
-        long t2 = System.currentTimeMillis();
-        System.out.println("init time: " + (t2 - t1) + " ms");
+//        long t2 = System.currentTimeMillis();
+//        System.out.println("init time: " + (t2 - t1) + " ms");
     }
 
     /**
@@ -78,19 +75,30 @@ public class UserCommand {
      */
     public List<String> searchCommand(String userInput) {
         List<UserCommandData> userCommandData = userCommandYamlData.get(YAML_USER_COMMAND_SERVER_KEY);
-        if (userCommandData == null || userInput == null) {
+        if (userCommandData == null || userInput == null || "".equals(userInput)) {
             return new ArrayList<>();
+        }
+        // userInput 第一个参数是命令名称, 之后的是服务名称 (可以有多个)
+        String[] userInputArr = userInput.split(" ");
+        if (userInputArr.length == 1) {
+            System.out.println("error: illegal input userCommand [ " + userInput + " ]");
+            System.exit(0);
+        }
+        String userInputCommandName = userInputArr[0];
+        Map<String, String> userInputServerNameMap = new HashMap<>();
+        for (int i = 1; i < userInputArr.length; i++) {
+            userInputServerNameMap.put(userInputArr[i], "");
         }
         List<String> result = new ArrayList<>();
         for (UserCommandData item : userCommandData) {
             String serverName = item.getName();
             // 判断输入字符串中是否包含服务名称
-            if (userInput.contains(serverName)) {
+            if (userInputServerNameMap.containsKey(serverName)) {
                 List<UserCommandData.CommandsData> commands = item.getCommands();
                 for (UserCommandData.CommandsData command : commands) {
                     String commandName = command.getName();
-                    // 判断输入字符串中是否包含命令名称
-                    if (userInput.contains(commandName)) {
+                    // 判断输入字符串中是否等于命令名称
+                    if (userInputCommandName.contains(commandName)) {
                         List<String> scripts = command.getScripts();
                         if (scripts == null || scripts.isEmpty()) {
                             continue;
@@ -129,5 +137,24 @@ public class UserCommand {
             String[] cmd = {"/bin/bash", "-c", "bash " + script};
             commandExecutor.executeCommand(cmd, new File(ApplicationContext.templateOutPutPath), System.getenv());
         }
+    }
+
+    /**
+     * 获取全部可用命令
+     * @return build minio  / start redis  / build redis 等等用户定义命令
+     */
+    public List<String> getAllCommand() {
+        List<UserCommandData> userCommandData = userCommandYamlData.get(YAML_USER_COMMAND_SERVER_KEY);
+        List<String> result = new ArrayList<>();
+        for (UserCommandData item : userCommandData) {
+            String serverName = item.getName();
+            List<UserCommandData.CommandsData> commands = item.getCommands();
+            for (UserCommandData.CommandsData command : commands) {
+                String commandName = command.getName();
+                String name = commandName + " " + serverName;
+                result.add(name);
+            }
+        }
+        return result;
     }
 }

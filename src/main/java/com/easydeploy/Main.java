@@ -60,46 +60,64 @@ public class Main {
                 ApplicationContext.writeTargetProjectRootPathToFile();
             }
 
-            // 判断是否解析模板
-            if (cli.hasOption("pt")){
-                boolean isParseTemplate = Boolean.parseBoolean(cli.getOptionValue("pt","false"));
-                if (!isParseTemplate) {
-                    return;
-                }
-                YamlService.loadYaml();
-                YamlService.processYamlValue();
+//            boolean isParseTemplate = Boolean.parseBoolean(cli.getOptionValue("pt","false"));
+//            if (!isParseTemplate) {
+//                return;
+//            }
+            YamlService.loadYaml();
+            YamlService.processYamlValue();
 
-                ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_PATH);
+            ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_PATH);
 
-                ApplicationContext.deleteTemplateOutFiles();
+            ApplicationContext.deleteTemplateOutFiles();
 
-                VelocityUtils.initVelocity();
-                VelocityContext context = new VelocityContext();
+            VelocityUtils.initVelocity();
+            VelocityContext context = new VelocityContext();
 
-                context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
-                context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
+            context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
+            context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
 
-                // 渲染模板
-                // 获取模板列表
-                String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
-                List<String> templates = getVmList();
-                for (String template : templates) {
-                    StringWriter sw = new StringWriter();
-                    Template tpl = Velocity.getTemplate(template, "UTF-8");
-                    tpl.merge(context, sw);
-                    String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
-                            .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
-                            .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
-                    FileUtils.saveAsFileWriter(outPath, sw.toString());
-                    if (EasyDeployProperties.outProperties.getOnlyRead()) {
-                        if (!new File(outPath).setReadOnly()) {
-                            throw new RuntimeException("set [ " + outPath + " ] read only fail");
-                        }
+            // 渲染模板
+            // 获取模板列表
+            String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
+            List<String> templates = getVmList();
+            for (String template : templates) {
+                StringWriter sw = new StringWriter();
+                Template tpl = Velocity.getTemplate(template, "UTF-8");
+                tpl.merge(context, sw);
+                String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
+                        .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__ED_VM, "")
+                        .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
+                FileUtils.saveAsFileWriter(outPath, sw.toString());
+                if (EasyDeployProperties.outProperties.getOnlyRead()) {
+                    if (!new File(outPath).setReadOnly()) {
+                        throw new RuntimeException("set [ " + outPath + " ] read only fail");
                     }
                 }
-                // 执行用户命令
-                UserCommand userCommand = new UserCommand();
-                userCommand.init();
+            }
+
+            // 执行用户命令
+            StringBuilder execCommand = new StringBuilder();
+            List<String> allArgs = cli.getArgList();
+            if (cli.hasOption("exec")) {
+                execCommand = new StringBuilder(String.valueOf(cli.getOptionValue("exec")));
+            }
+            for (String arg : allArgs) {
+                execCommand.append(" ").append(arg);
+            }
+
+            UserCommand userCommand = new UserCommand();
+            userCommand.init();
+            List<String> searchCommand = userCommand.searchCommand(execCommand.toString());
+            if (searchCommand.isEmpty()) {
+                System.out.println("execCommand: " + execCommand + " not exist");
+                System.exit(0);
+            }
+
+            System.out.println("execCommand: " + execCommand);
+            // 执行命令
+            for (String command : searchCommand) {
+                userCommand.execCommand(command);
             }
         } catch (Exception e) {
             e.printStackTrace();

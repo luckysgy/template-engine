@@ -18,15 +18,19 @@ public class CommandParser {
 
         // 是否解析模板
         Option optParseTemplate = new Option("pt","parse template",true,"true | false");
-        optCurrentDir.setRequired(true);
+        optCurrentDir.setRequired(false);
 
         Option optShellPid = new Option("sp","shell pid",true,"passed in by the shell");
         optShellPid.setRequired(true);
+
+        Option optExecUserCommand = new Option("exec","exec command",true,"exec user command");
+        optExecUserCommand.setRequired(false);
 
         Options options = new Options();
         options.addOption(optCurrentDir);
         options.addOption(optParseTemplate);
         options.addOption(optShellPid);
+        options.addOption(optExecUserCommand);
 
         CommandLineParser cliParser = new DefaultParser();
         HelpFormatter helpFormatter = new HelpFormatter();
