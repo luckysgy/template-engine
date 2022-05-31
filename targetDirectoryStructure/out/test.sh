@@ -26,7 +26,7 @@ This is maple.
 # ---------------- parse
 
 # ---------------------------- start module
-/code/my/easy-deploy/targetDirectoryStructure
+/project/my/easy-deploy/targetDirectoryStructure
 # ---------------------------- end module
 
 
@@ -50,8 +50,8 @@ cd ../outProperties
 ..
 ../data
 source ../shell/color-log.sh
-rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/test.sh
+rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/test.sh
 
-rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/conf/test.tar
-rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
+rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/conf/test.tar
+rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/data.tar
 warn "cd .."

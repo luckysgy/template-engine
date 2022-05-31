@@ -235,7 +235,7 @@ public class FileUtils {
         }
         finally {
             if (os != null) {
-                try {
+                try { 
                     os.close();
                 }
                 catch (IOException e1) {

@@ -2,6 +2,7 @@ package com.easydeploy;
 
 import com.easydeploy.constant.SystemConstant;
 import com.easydeploy.context.ApplicationContext;
+import com.easydeploy.domain.user_command.UserCommand;
 import com.easydeploy.properties.EasyDeployProperties;
 import com.easydeploy.service.YamlService;
 import com.easydeploy.utils.FileUtils;
@@ -96,6 +97,9 @@ public class Main {
                         }
                     }
                 }
+                // 执行用户命令
+                UserCommand userCommand = new UserCommand();
+                userCommand.init();
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,3 +1,3 @@
 source ../../shell/color-log.sh
-infolog /code/my/easy-deploy/targetDirectoryStructure/data
-error /code/my/easy-deploy/targetDirectoryStructure
+infolog /project/my/easy-deploy/targetDirectoryStructure/data
+error /project/my/easy-deploy/targetDirectoryStructure

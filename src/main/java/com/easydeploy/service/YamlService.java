@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,7 +36,7 @@ public class YamlService {
     /**
      * 加载yaml
      */
-    public static void loadYaml() {
+    public static void loadYaml() throws Exception {
         Yaml yaml = new Yaml();
         InputStream in = null;
         try {
@@ -91,6 +92,10 @@ public class YamlService {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (in != null) {
+                in.close();
+            }
         }
     }
 
@@ -221,7 +226,6 @@ public class YamlService {
                 result.put(keyData.substring(1), entry.getValue());
             }
             keyData = keyData.substring(0, keyData.lastIndexOf("."));
-
         }
     }
 
