@@ -1,3 +1,3 @@
 source #shell("color-log.sh")
-infolog $ed.dataPath
-error $ed.rootPath
+infolog $te.dataPath
+error $te.rootPath

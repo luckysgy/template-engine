@@ -1,7 +1,7 @@
 #set($Say = ["Not",$name,"fault"]) ##数组列表
 $Say[0]
-$ed.my.name
-$ed.mysql.dataPath
+$te.my.name
+$te.mysql.dataPath
 
-ed.test3.name: ${ed.test3.name}
-ed.test4.name: ${ed.test4.name}
+te.test3.name: ${te.test3.name}
+te.test4.name: ${te.test4.name}

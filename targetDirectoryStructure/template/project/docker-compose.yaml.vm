@@ -2,15 +2,15 @@ version: "3"
 services:
   minio:
     # 镜像文件
-    image: ${ed.storage.minio.image}
+    image: ${te.storage.minio.image}
     container_name: minio-server
     ports:
-      - ${ed.storage.minio.port}:9000
+      - ${te.storage.minio.port}:9000
     volumes: 
-      - "${ed.storage.minio.volumeBasePath}:/data"
+      - "${te.storage.minio.volumeBasePath}:/data"
     environment:
-      MINIO_ACCESS_KEY: ${ed.storage.minio.accessKey}
-      MINIO_SECRET_KEY: ${ed.storage.minio.secretKey}
+      MINIO_ACCESS_KEY: ${te.storage.minio.accessKey}
+      MINIO_SECRET_KEY: ${te.storage.minio.secretKey}
     command: server /data
     restart: always
     logging:

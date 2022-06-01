@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.easydeploy</groupId>
-    <artifactId>easy-deploy</artifactId>
+    <groupId>com.template_engine</groupId>
+    <artifactId>template-engine</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -75,7 +75,7 @@
     </dependencies>
 
     <build>
-        <finalName>easy-deploy</finalName>
+        <finalName>template-engine</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -90,7 +90,7 @@
                     <!-- MainClass in mainfest make a executable jar -->
                     <archive>
                         <manifest>
-                            <mainClass>com.easydeploy.Main</mainClass>
+                            <mainClass>com.template_engine.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

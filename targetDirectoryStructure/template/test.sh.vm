@@ -57,14 +57,14 @@ This is $element.
 ####################################################
 ##  对字符串截取
 ####################################################
-#set($dataSplit = $ed.test2.name.split("-"))
+#set($dataSplit = $te.test2.name.split("-"))
 #foreach($element in [$Integer.parseInt($dataSplit[0])..$Integer.parseInt($dataSplit[1])])
 对字符串截取 $element
 $velocityCount
 #end
 
-"${ed.minio.volumebasepath}"
-"${ed.my.name}"
+"${te.minio.volumebasepath}"
+"${te.my.name}"
 #set($test1 = "#rootPath/test1")
 $test1
 cd #rootPath/outProperties

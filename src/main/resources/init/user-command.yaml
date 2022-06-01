@@ -1,0 +1,23 @@
+server:
+  # 服务名称
+  - name: default
+    commands:
+      # 命令, 可以指定多个命令
+      - name: build
+        # 指定执行的脚本, 可以指定多个, 当执行build命令时候, 会依次执行所有脚本
+        # 这里指定的脚本是存在于template中的脚本, 文件名可以没有.vm后缀, 系统会自动去掉
+        # 指定的脚本路径是template的相对路径
+        scripts:
+          - "$PWD"
+      - name: start
+        scripts:
+          - "$PWD"
+
+#  - name: redis
+#    commands:
+#      - name: build
+#        scripts:
+#          - redis/build.sh.vm
+#      - name: start
+#        scripts:
+#          - redis/start.sh.vm
