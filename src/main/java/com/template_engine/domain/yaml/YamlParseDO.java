@@ -83,7 +83,7 @@ public class YamlParseDO {
             initInternalVariable();
             loadCustomObject();
 
-            // 从easy-deploy中获取app信息
+            // 从config.yaml中获取app信息
             App app = SystemProperties.app;
             Map<String, String> appInfo = (Map<String, String>) YAML_DATA.get(SystemConstant.PRO_APP);
             if (appInfo == null) {

@@ -5,7 +5,7 @@ package com.template_engine.constant;
  * @date 2021-11-11 19:35
  */
 public class SystemConstant {
-    public static final String VERSION = "v2.0.0";
+    public static final String VERSION = "v1.1.0";
     public static final String RESOURCES_DIR_INIT = "init";
     public static final String PRINT_SEPARATOR_PREFIX = "\n===========================>>>";
     /**
@@ -48,13 +48,13 @@ public class SystemConstant {
     public static final String TEMPLATE_ENGINE_FILE_NAME = "config.yaml";
 
     /**
-     * 模板中key前缀, easy-deploy 首字母
+     * 模板中key前缀, template-engine 首字母
      */
     public static final String TEMPLATE_KEY_PRE = "te";
     /**
      * 解析模板输出路径, 在工程的out目录下
      * out 目录变成 template
-     * @since v1.0.1
+     * @since v1.1.0
      */
     public static final String TEMPLATE_OUT_DIR_NAME = "templates";
 
