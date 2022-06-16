@@ -157,7 +157,7 @@ rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
 package com.template_engine.directive;
 
 import com.template_engine.constant.SystemConstant;
-import com.template_engine.context.ApplicationContext;
+import com.template_engine.domain.ApplicationContext;
 import com.template_engine.utils.FileUtils;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;

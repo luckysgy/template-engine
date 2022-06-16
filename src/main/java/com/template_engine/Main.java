@@ -1,10 +1,10 @@
 package com.template_engine;
 
 import com.template_engine.constant.SystemConstant;
-import com.template_engine.context.ApplicationContext;
-import com.template_engine.domain.user_command.UserCommand;
-import com.template_engine.properties.EasyDeployProperties;
-import com.template_engine.service.YamlService;
+import com.template_engine.domain.ApplicationContext;
+import com.template_engine.domain.command.CommandParser;
+import com.template_engine.properties.SystemProperties;
+import com.template_engine.domain.yaml.YamlParseDO;
 import com.template_engine.utils.FileUtils;
 import com.template_engine.utils.VelocityUtils;
 import org.apache.commons.cli.CommandLine;
@@ -46,6 +46,11 @@ public class Main {
         String currentDir = "";
         try {
             CommandLine cli = commandParser.exec(args);
+            if (cli.hasOption("v")) {
+                System.out.println("current version: " + SystemConstant.VERSION);
+                return;
+            }
+
             // 获取当前目录
             if (cli.hasOption("cd")) {
                 // 获取参数“cd”对应的参数值，如果为空则返回1（默认值）
@@ -57,81 +62,53 @@ public class Main {
                 return;
             }
 
-            UserCommand userCommand = new UserCommand();
-            userCommand.init();
-
-            if (cli.hasOption("uc")) {
-                String ucOptionValue = String.valueOf(cli.getOptionValue("uc","ls"));
-                // 列出所有可用的用户命令
-                if ("ls".equals(ucOptionValue)) {
-                    List<String> allUserCommand = userCommand.getAllCommand();
-                    System.out.println("all available user commands: ");
-                    for (String uc : allUserCommand) {
-                        System.out.println("  " + uc);
-                    }
-                }
-                return;
+            YamlParseDO.loadYaml();
+            YamlParseDO.processYamlValue();
+            if (cli.hasOption("lv")) {
+                YamlParseDO.printFlatYamlValue();
             }
 
-            YamlService.loadYaml();
-            YamlService.processYamlValue();
-            YamlService.printFlatYamlValue();
+            ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_DIR_NAME);
 
-            ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_PATH);
-
-            ApplicationContext.deleteTemplateOutFiles();
+//             ApplicationContext.deleteTemplateOutFiles();
+//            TemplateDO templateDO = new TemplateDO();
+//            templateDO.templateFilePathList();
 
             VelocityUtils.initVelocity();
             VelocityContext context = new VelocityContext();
 
-            context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlService.getYamlValueData());
-            context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlService.getCustomObject());
+            context.put(SystemConstant.TEMPLATE_KEY_PRE, YamlParseDO.getYamlValueData());
+            context.put(SystemConstant.TEMPLATE_CUSTOM_OBJECT_KEY_PRE, YamlParseDO.getCustomObject());
 
             // 渲染模板
             // 获取模板列表
             String parseTemplateOutPath = ApplicationContext.templateOutPutPath;
-            List<String> templates = getVmList();
-            for (String template : templates) {
+            List<String> templateFilePathList = getVmList();
+            for (String templateFilePath : templateFilePathList) {
+                // 判断是否需要解析
+                if (!templateFilePath.endsWith(SystemConstant.TEMPLATE_SUFFIX__VM) 
+                        && !templateFilePath.endsWith(SystemConstant.TEMPLATE_SUFFIX__TE_VM)) {
+                    continue;
+                }
+                
                 StringWriter sw = new StringWriter();
-                Template tpl = Velocity.getTemplate(template, "UTF-8");
+                Template tpl = Velocity.getTemplate(templateFilePath, "UTF-8");
                 tpl.merge(context, sw);
-                String outPath = parseTemplateOutPath + "/" + template.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
-                        .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__TE_VM, "")
-                        .replace(SystemConstant.DELETE_TEMPLATE_SUFFIX__VM, "");
+                String outPath = parseTemplateOutPath + "/" + templateFilePath.replace(SystemConstant.TEMPLATE_DIR_NAME + "/", "")
+                        .replace(SystemConstant.TEMPLATE_SUFFIX__TE_VM, "")
+                        .replace(SystemConstant.TEMPLATE_SUFFIX__VM, "");
+                File outFile = new File(outPath);
+                if (outFile.exists() && !outFile.delete()) {
+                    System.out.println("delete file fail: " + outPath);
+                    continue;
+                }
+
                 FileUtils.saveAsFileWriter(outPath, sw.toString());
-                if (EasyDeployProperties.outProperties.getOnlyRead()) {
+                if (SystemProperties.outProperties.getOnlyRead()) {
                     if (!new File(outPath).setReadOnly()) {
                         throw new RuntimeException("set [ " + outPath + " ] read only fail");
                     }
                 }
-            }
-
-            // 执行用户命令
-            List<String> allArgs = cli.getArgList();
-            if (!cli.hasOption("euc")) {
-                return;
-            }
-            StringBuilder execCommand = new StringBuilder(String.valueOf(cli.getOptionValue("euc")));
-            for (String arg : allArgs) {
-                execCommand.append(" ").append(arg);
-            }
-
-
-            List<String> searchCommand = userCommand.searchCommand(execCommand.toString());
-            if (searchCommand.isEmpty()) {
-                System.out.println("execCommand: " + execCommand + " not exist\n");
-                System.out.println("all available user commands: ");
-                List<String> allUserCommand = userCommand.getAllCommand();
-                for (String uc : allUserCommand) {
-                    System.out.println("  " + uc);
-                }
-                System.exit(0);
-            }
-
-            System.out.println("execCommand: " + execCommand);
-            // 执行命令
-            for (String command : searchCommand) {
-                userCommand.execCommand(command);
             }
         } catch (Exception e) {
             System.err.println("error: " + e.getMessage());

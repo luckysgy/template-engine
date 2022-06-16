@@ -1,7 +1,7 @@
 package com.template_engine.directive;
 
 import com.template_engine.constant.DirectiveConstant;
-import com.template_engine.context.ApplicationContext;
+import com.template_engine.domain.ApplicationContext;
 import com.template_engine.utils.FileUtils;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
+ * 仅供参考
+ * @deprecated
  * @author shenguangyang
  * @date 2021-11-13 7:34
  */

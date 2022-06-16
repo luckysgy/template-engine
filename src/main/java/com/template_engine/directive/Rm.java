@@ -2,7 +2,7 @@ package com.template_engine.directive;
 
 import com.template_engine.constant.DirectiveConstant;
 import com.template_engine.constant.SystemConstant;
-import com.template_engine.context.ApplicationContext;
+import com.template_engine.domain.ApplicationContext;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -33,7 +33,7 @@ public class Rm extends Directive {
 
     @Override
     public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        String outDirRelativePath = context.getCurrentTemplateName().replaceFirst(SystemConstant.TEMPLATE_DIR_NAME, SystemConstant.TEMPLATE_OUT_PATH);
+        String outDirRelativePath = context.getCurrentTemplateName().replaceFirst(SystemConstant.TEMPLATE_DIR_NAME, SystemConstant.TEMPLATE_OUT_DIR_NAME);
         outDirRelativePath = outDirRelativePath.substring(0, outDirRelativePath.lastIndexOf("/"));
         String outDir = ApplicationContext.targetProjectRootPath + "/" + outDirRelativePath;
         Node node1 = node.jjtGetChild(0);

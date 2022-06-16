@@ -1,8 +1,10 @@
 package com.template_engine.utils;
 
 import org.apache.velocity.texen.util.FileUtil;
+import sun.misc.IOUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -79,14 +81,60 @@ public class FileUtils {
      * @throws IOException
      */
     public static void writeToFile(InputStream is, String filePath) throws IOException {
-        OutputStream os = new FileOutputStream(filePath);
-        int len = 8192;
-        byte[] buffer = new byte[len];
-        while ((len = is.read(buffer, 0, len)) != -1) {
-            os.write(buffer, 0, len);
+        try (OutputStream os = new FileOutputStream(filePath)) {
+            int len = 8192;
+            byte[] buffer = new byte[len];
+            while ((len = is.read(buffer, 0, len)) != -1) {
+                os.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            is.close();
         }
-        os.close();
-        is.close();
+    }
+
+    public static String toString(InputStream inputStream) throws Exception {
+        if (inputStream == null) {
+            return "";
+        }
+        final int bufferSize = 1024;
+        final char[] buffer = new char[bufferSize];
+        final StringBuilder out = new StringBuilder();
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        for (; ; ) {
+            int rsz = reader.read(buffer, 0, buffer.length);
+            if (rsz < 0)
+                break;
+            out.append(buffer, 0, rsz);
+        }
+        return out.toString();
+    }
+
+    /**
+     * 获取jar包某个文件中的文本内容
+     * @param path  不能以/开头   指向文件不能是目录
+     */
+    public static String getFileContentFromJar(String path) throws Exception {
+        InputStream in = null;
+        try {
+            if (path == null) {
+                return "";
+            }
+            if (path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            //获取文件流
+            in = FileUtil.class.getClassLoader().getResourceAsStream(path);
+            if (in == null) {
+                return "";
+            }
+            return toString(in);
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
     }
 
     /**
@@ -94,7 +142,7 @@ public class FileUtils {
      * @param path  不能以/开头   指向文件不能是目录
      * @param newPath   指向文件不能是目录
      */
-    public static void copyFileFromJar(String path,String newPath) {
+    public static void copyFileFromJar(String path, String newPath) {
         try {
             if (path == null) {
                 return;

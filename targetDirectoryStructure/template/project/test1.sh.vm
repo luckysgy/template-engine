@@ -1,7 +1,0 @@
-#set($Say = ["Not",$name,"fault"]) ##数组列表
-$Say[0]
-$te.my.name
-$te.mysql.dataPath
-
-te.test3.name: ${te.test3.name}
-te.test4.name: ${te.test4.name}

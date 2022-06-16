@@ -1,6 +1,6 @@
 package com.template_engine.utils;
 
-import com.template_engine.context.ApplicationContext;
+import com.template_engine.domain.ApplicationContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
