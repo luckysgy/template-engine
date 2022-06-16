@@ -9,15 +9,14 @@ cd: current dir, 被解析工程的根目录或子目录(value/xxx 或者 templa
 
 # 都有哪些功能
 
-- 解析yaml文件将值传入到vm模板文件中
-- 在value目录下的yaml文件可以通过 ${xxx.yyy} 的格式取当前yaml或其他yaml文件数据, 如果找不到会找系统环境变量
+- 解析yaml文件将值传入到vm模板文件中, 并通过 ${te.xxx.yyy} 方式获取值
+- 在valuea目录下的yaml文件可以通过 ${xxx.yyy} 的格式取当前yaml或其他yaml文件数据, 如果找不到会找系统环境变量
 - 项目启动自动提示并创建部署项目的目录基本结构
-- 内置相对路径指令以及绝对路径参数 (data / value / shell等项目根目录)
 - 内置系统自带的方法， 比如时间方法, 字符串转整型, 遍历，更多信息请参考 (velocity官网或者百度找教程, 语法很简单)
 - 可以调用java中的方法
-- 内置一些脚本, 可以很方便的模板文件vm中指定具体想要调用哪个脚本, 解析之后会将脚本放在根目录下的shell目录中, 并且解析之后的文件是以相对路径找到脚本文件
-- 新增可以使能指定value目录下的yaml文件生效
+- 新增可以使能指定values目录下的yaml文件生效
 - 模板文件后缀应为`.vm` 或者 `_te.vm` 
+- 可以输入 te -h命令查看可用的命令, 比如我经常使用的te -ltk命令, 意思是列出模板文件中可以使用的全部占位符(key)
 
 # 关于模板文件的后缀问题
 
@@ -41,15 +40,14 @@ source install.sh
 
 在模板中从value中取的所有变量都是以te开头
 
-
 # 要部署项目的目录结构
 
 ```text
-data: 存放你部署时候需要的数据
-template: 存放模板数据, 每个文件必须以.vm结尾
-value: 存放模板文件中所有的变量值
+modules: 存放模板文件模块数据, 每个文件必须以.vm结尾, 一般用不到
+templates: 存放模板数据, 每个文件必须以.vm结尾或者 _te.vm结尾
+values: 存放模板文件中所有的变量值
 config.yaml: 系统配置文件, 必须有
-user-command.yaml: 用于存放用户自定义命令必须有
+
 ```
 
 # 使用方法
@@ -67,21 +65,15 @@ total 32
 drwxr-xr-x 6 root root 4096 Jun  1 13:53 ./
 drwxr-xr-x 9 root root 4096 Jun  1 13:52 ../
 -rw-r--r-- 1 root root  199 Jun  1 13:53 config.yaml
-drwxr-xr-x 2 root root 4096 Jun  1 13:53 data/
 drwxr-xr-x 2 root root 4096 Jun  1 13:53 modules/
-drwxr-xr-x 2 root root 4096 Jun  1 13:53 template/
--rw-r--r-- 1 root root  690 Jun  1 13:53 user-command.yaml
-drwxr-xr-x 2 root root 4096 Jun  1 13:53 value/
+drwxr-xr-x 2 root root 4096 Jun  1 13:53 templates/
+drwxr-xr-x 2 root root 4096 Jun  1 13:53 values/
 root@work01:/mnt/deploy/template-engine-demo#
 ```
 
 > 可以看到如果当前文件夹有缺失的文件或者文件夹会自动提示初始化完整的目录结构
 
-
-
-接下来你需要在value文件夹中编写你的yaml文件, 在template文件夹中编写你的模板文件
-
-
+接下来你需要在values文件夹中编写你的yaml文件, 在templates文件夹中编写你的模板文件
 
 config.yaml
 
@@ -97,35 +89,6 @@ app:
 
 out:
   isOnlyRead: true
-```
-
-
-
-# 内置变量
-
-## 路径
-
-te.dataPath: 数据路径, 存在与项目的根目录下且文件夹名为data
-te.rootPath: 项目根路径
-```text
-$te.dataPath
-$te.rootPath
-```
-
-以上路径变量输出的都是绝对路径: 但是有时我们为了方便将生成的目标文件移植到线上环境部署, 那就需要使用相对路径
-
-> 请看内置自定义指令#路径指令
-
-# 内置自定义指令
-
-## 路径指令
-
-```velocity
-项目根路径
-#rootPath 
-项目根路径下的数据路径
-#dataPath
-
 ```
 
 ## 安全删除文件指令
@@ -147,7 +110,6 @@ rm -rf /code/my/easy-deploy/targetDirectoryStructure/out/data.tar
 ```
 
 仅限于删除out目录下的文件, 解析之后是删除的是文件全路径, 目的防止从配置文件中动态传入删除的文件路径, 如果用户不小心传入了 /, /usr, 那会造成毁灭性的灾难, 比如 rm -rf ${te.name}, 如果name = /usr, 则会变成 rm -rf /usr
-
 
 ## 如何二次开发新增指令
 
@@ -208,7 +170,5 @@ public class DataPath extends Directive {
     }
 }
 ```
-
-
 
 > 项目中将所有自定义的指令都放在了 `com.template_engine.directive` 包下
