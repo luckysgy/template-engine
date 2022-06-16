@@ -63,7 +63,7 @@ public class Main {
 
             YamlParseDO.loadYaml();
             YamlParseDO.processYamlValue();
-            if (cli.hasOption("lv")) {
+            if (cli.hasOption("ltk")) {
                 YamlParseDO.printFlatYamlValue();
             }
 
