@@ -23,7 +23,7 @@ public class CommandParser {
             Option helpOption = new Option("h","help",false,"help command");
             helpOption.setRequired(false);
 
-            Option lsValuesOption = new Option("lv","ls_values",false,"list values");
+            Option lsValuesOption = new Option("ltk","ls_template_key",false,"list all templates key ${xxxx}");
             lsValuesOption.setRequired(false);
 
             options.addOption(currentDirOption);
