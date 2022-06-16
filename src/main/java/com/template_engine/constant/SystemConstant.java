@@ -46,7 +46,6 @@ public class SystemConstant {
      * 项目必须加载的yaml文件
      */
     public static final String TEMPLATE_ENGINE_FILE_NAME = "config.yaml";
-    public static final String USER_COMMAND_FILE_NAME = "user-command.yaml";
 
     /**
      * 模板中key前缀, easy-deploy 首字母

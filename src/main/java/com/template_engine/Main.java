@@ -56,7 +56,6 @@ public class Main {
                 // 获取参数“cd”对应的参数值，如果为空则返回1（默认值）
                 currentDir = String.valueOf(cli.getOptionValue("cd",""));
                 ApplicationContext.init(currentDir);
-                // ApplicationContext.writeTargetProjectRootPathToFile();
             } else {
                 System.err.println("error: no cd (current dir) command specified");
                 return;
@@ -69,10 +68,6 @@ public class Main {
             }
 
             ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_DIR_NAME);
-
-//             ApplicationContext.deleteTemplateOutFiles();
-//            TemplateDO templateDO = new TemplateDO();
-//            templateDO.templateFilePathList();
 
             VelocityUtils.initVelocity();
             VelocityContext context = new VelocityContext();
@@ -112,7 +107,6 @@ public class Main {
             }
         } catch (Exception e) {
             System.err.println("error: " + e.getMessage());
-            // ApplicationContext.writeTargetProjectRootPathToFile();
         }
     }
 }

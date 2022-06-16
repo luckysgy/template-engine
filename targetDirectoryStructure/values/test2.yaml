@@ -2,6 +2,9 @@ test2:
   name: 100-105
 mysql:
   dataPath: /home
+  port: 124
+  username: root
+  password: 11111
 
 test3:
   name: ${mysql.dataPath}

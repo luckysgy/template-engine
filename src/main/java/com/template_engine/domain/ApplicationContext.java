@@ -22,10 +22,6 @@ public class ApplicationContext {
     public static String templateOutPutPath;
 
     /**
-     * 目标工程的数据目录
-     */
-    public static String targetProjectDataPath;
-    /**
      * 目标工程存放 modules 的文件夹
      */
     public static String targetProjectModulesPath;
@@ -56,7 +52,6 @@ public class ApplicationContext {
         if (ApplicationContext.targetProjectRootPath.endsWith("/")) {
             ApplicationContext.targetProjectRootPath = targetProjectRootPath.substring(0, targetProjectRootPath.lastIndexOf("/"));
         }
-        ApplicationContext.targetProjectDataPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.DATA_DIR_NAME;
         ApplicationContext.targetProjectTemplatePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.TEMPLATE_DIR_NAME;
         ApplicationContext.targetProjectValuePath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.VALUE_DIR_NAME;
         ApplicationContext.targetProjectModulesPath = ApplicationContext.targetProjectRootPath + "/" + SystemConstant.TEMPLATE_MODULES_DIR_NAME;

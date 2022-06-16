@@ -48,7 +48,7 @@ $ed.rootPath
 ../test1
 cd ../outProperties
 ..
-../data
+#dataPath
 source #shell("color-log.sh")
 rm -rf /project/my/template-engine/targetDirectoryStructure/templates/test.sh
 

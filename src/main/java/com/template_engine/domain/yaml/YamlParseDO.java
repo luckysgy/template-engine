@@ -263,11 +263,12 @@ public class YamlParseDO {
      *  而本方法的作用从根节点出发,连接所有的key, 打印 ${前缀.key1.key2.key3-1} = we4r23
      */
     public static void printFlatYamlValue() {
-        System.out.println(SystemConstant.PRINT_SEPARATOR_PREFIX + " all values");
-        for (Map.Entry<String, Object> entry : FLAT_YAML_DATA.entrySet()) {
+        System.out.println(SystemConstant.PRINT_SEPARATOR_PREFIX + " all templates key ${xx}");
+        // 排序并输出
+        FLAT_YAML_DATA.entrySet().stream().sorted(Map.Entry.<String, Object>comparingByKey().reversed()).forEachOrdered(entry -> {
             String key = entry.getKey();
             System.out.println("${" + SystemConstant.TEMPLATE_KEY_PRE + "." + key + "}");
-        }
+        });
     }
 
     public static Map<String, Object> getCustomObject() {
