@@ -25,6 +25,20 @@ import java.util.regex.Pattern;
 public class YamlService {
     // 也可以将值转换为Map
     private static final Map<String, Object> YAML_DATA = new HashMap<>();
+    /**
+     * 扁平的yaml数据 (对{@link #YAML_DATA} 的加工)
+     *
+     * 将map中的key, 以点连接在一起
+     * 比如yaml插件解析的数据为Map
+     *  key1:
+     *      key2:
+     *          key3-1: we4r23
+     *          key3-2: 234234
+     *      key2-1: 23412
+     *  可以看到如果你的yaml文件有多层, {@link #YAML_DATA} 则对应map就有多层
+     *  而当前属性存储的结构就是从根节点出发,连接所有的key, 比如key1.key2.key3-1 = we4r23
+     */
+    private static final Map<String, Object> FLAT_YAML_DATA = new HashMap<>();
 
     // 存放自定义对象
     private static final Map<String, Object> CUSTOM_OBJECT = new HashMap<>();
@@ -110,21 +124,20 @@ public class YamlService {
      * 处理yaml中的值
      */
     public static void processYamlValue() {
-        Map<String, Object> yamlDataParseResult = new HashMap<>();
-        recursionYamlData("", YAML_DATA, yamlDataParseResult);
+        recursionYamlData("", YAML_DATA, FLAT_YAML_DATA);
         Map<String,String> envMap = System.getenv();
 
-        Map<String, Object> forResult = new HashMap<>(yamlDataParseResult);
+        Map<String, Object> forResult = new HashMap<>(FLAT_YAML_DATA);
         for (Map.Entry<String, Object> entry : forResult.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof String) {
-                processYamlValueByRecursion(key, String.valueOf(value), yamlDataParseResult);
+                processYamlValueByRecursion(key, String.valueOf(value), FLAT_YAML_DATA);
             }
         }
 
         // 查找环境变量
-        Map<String, Object> forResultFromEnv = new HashMap<>(yamlDataParseResult);
+        Map<String, Object> forResultFromEnv = new HashMap<>(FLAT_YAML_DATA);
         for (Map.Entry<String, Object> entry : forResultFromEnv.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -141,7 +154,7 @@ public class YamlService {
                     }
                     valueString = valueString.replace("${" + findKey + "}", value + "");
                     setYamlQuote(key, valueString);
-                    yamlDataParseResult.put(key, valueString);
+                    FLAT_YAML_DATA.put(key, valueString);
                 }
             }
         }
@@ -153,23 +166,23 @@ public class YamlService {
      * @param valueString 值中含有 ${...}
      * @return 返回的是值
      */
-    private static String processYamlValueByRecursion(String key, String valueString, Map<String, Object> yamlDataParseResult) {
+    private static String processYamlValueByRecursion(String key, String valueString, Map<String, Object> FLAT_YAML_DATA) {
         Matcher matcher = pattern.matcher(valueString);
         while (matcher.find()) {
             Object value;
             String findKey = matcher.group(1);
-            value = yamlDataParseResult.get(findKey);
+            value = FLAT_YAML_DATA.get(findKey);
             if (value == null) {
                 continue;
             }
             if (value instanceof String || value instanceof Double || value instanceof Integer || value instanceof Float
                     || value instanceof Long || value instanceof Short) {
-                value = processYamlValueByRecursion(findKey, String.valueOf(value), yamlDataParseResult);
+                value = processYamlValueByRecursion(findKey, String.valueOf(value), FLAT_YAML_DATA);
                 valueString = valueString.replace("${" + findKey + "}", value + "");
             }
         }
         setYamlQuote(key, valueString);
-        yamlDataParseResult.put(key, valueString);
+        FLAT_YAML_DATA.put(key, valueString);
         return valueString;
     }
 
@@ -230,6 +243,26 @@ public class YamlService {
 
     public static Map<String, Object> getYamlValueData() {
         return YAML_DATA;
+    }
+
+    /**
+     * 打印扁平化的yaml中的值数据
+     *
+     * 比如yaml插件解析的数据为Map
+     *  key1:
+     *      key2:
+     *          key3-1: we4r23
+     *          key3-2: 234234
+     *      key2-1: 23412
+     *  可以看到如果你的yaml文件有多层, 则对应map就有多层
+     *  而本方法的作用从根节点出发,连接所有的key, 打印 ${前缀.key1.key2.key3-1} = we4r23
+     */
+    public static void printFlatYamlValue() {
+        System.out.println("all flat yaml: ");
+        for (Map.Entry<String, Object> entry : FLAT_YAML_DATA.entrySet()) {
+            String key = entry.getKey();
+            System.out.println(" ${" + SystemConstant.TEMPLATE_KEY_PRE + "." + key + "}");
+        }
     }
 
     public static Map<String, Object> getCustomObject() {

@@ -26,7 +26,7 @@ This is maple.
 # ---------------- parse
 
 # ---------------------------- start module
-/project/my/easy-deploy/targetDirectoryStructure
+$ed.rootPath
 # ---------------------------- end module
 
 
@@ -43,15 +43,17 @@ This is maple.
 对字符串截取 105
 6
 
-"${ed.minio.volumebasepath}"
-"${ed.my.name}"
+"${te.minio.volumebasepath}"
+"${te.my.name}"
 ../test1
 cd ../outProperties
 ..
 ../data
-source ../shell/color-log.sh
-rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/test.sh
+source #shell("color-log.sh")
+rm -rf /project/my/template-engine/targetDirectoryStructure/out/test.sh
 
-rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/conf/test.tar
-rm -rf /project/my/easy-deploy/targetDirectoryStructure/out/data.tar
+rm -rf /project/my/template-engine/targetDirectoryStructure/out/conf/test.tar
+rm -rf /project/my/template-engine/targetDirectoryStructure/out/data.tar
 warn "cd .."
+
+/home

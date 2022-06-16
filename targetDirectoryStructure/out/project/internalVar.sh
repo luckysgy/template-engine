@@ -1,3 +1,3 @@
-source ../../shell/color-log.sh
-infolog /project/my/easy-deploy/targetDirectoryStructure/data
-error /project/my/easy-deploy/targetDirectoryStructure
+source #shell("color-log.sh")
+infolog /project/my/template-engine/targetDirectoryStructure/data
+error /project/my/template-engine/targetDirectoryStructure

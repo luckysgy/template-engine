@@ -75,3 +75,5 @@ source #shell("color-log.sh")
 
 #rm("conf/test.tar data.tar")
 warn "cd #rootPath"
+
+${te.mysql.dataPath}

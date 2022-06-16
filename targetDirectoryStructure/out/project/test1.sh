@@ -1,6 +1,6 @@
  Not
-$ed.my.name
+$te.my.name
 /home
 
-ed.test3.name: /home
-ed.test4.name: /23423/home
+te.test3.name: /home
+te.test4.name: /23423/home

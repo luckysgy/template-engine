@@ -75,6 +75,7 @@ public class Main {
 
             YamlService.loadYaml();
             YamlService.processYamlValue();
+            YamlService.printFlatYamlValue();
 
             ApplicationContext.createParseTemplateOutPath(SystemConstant.TEMPLATE_OUT_PATH);
 
